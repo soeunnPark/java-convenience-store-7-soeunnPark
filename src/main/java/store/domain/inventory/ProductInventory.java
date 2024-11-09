@@ -42,13 +42,20 @@ public class ProductInventory {
         if (this.promotion == null) {
             return 0;
         }
-        if (purchaseQuantity < promotionStockQuantity) {
+        if (purchaseQuantity < this.promotionStockQuantity) {
             return 0;
         }
-        return purchaseQuantity - getPromotionApplicablePurchaseQuantity(purchaseQuantity);
+        return purchaseQuantity - getPromotionApplicablePurchaseQuantity();
     }
 
-    private int getPromotionApplicablePurchaseQuantity(int purchaseQuantity) {
-        return (promotionStockQuantity  / (this.promotion.getBuy() + this.promotion.getGet())) * (this.promotion.getBuy() + this.promotion.getGet());
+    public int getPromotionGiveawayCount(int purchaseQuantity) {
+        if (this.promotion == null) {
+            return 0;
+        }
+        return (Math.min(promotionStockQuantity, purchaseQuantity) / (this.promotion.getBuy() + this.promotion.getGet())) * this.promotion.getGet();
+    }
+
+    private int getPromotionApplicablePurchaseQuantity() {
+        return (this.promotionStockQuantity  / (this.promotion.getBuy() + this.promotion.getGet())) * (this.promotion.getBuy() + this.promotion.getGet());
     }
 }

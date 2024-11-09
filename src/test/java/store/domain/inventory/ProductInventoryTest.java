@@ -60,4 +60,25 @@ class ProductInventoryTest {
         ProductInventory productInventory = new ProductInventory(product, promotion, 10, promotionStockQuantity);
         assertThat(productInventory.getPromotionNonApplicablePurchaseQuantity(purchaseQuantity)).isEqualTo(promotionNonApplicablePurchaseQuantity);
     }
+
+    @DisplayName("프로모션 혜택을 받을 증정품의 개수를 구한다.")
+    @ParameterizedTest
+    @CsvSource( {
+            "2, 10, 2, 0",
+            "2, 10, 3, 1",
+            "2, 10, 4, 1",
+            "2, 10, 5, 1",
+            "2, 10, 6, 2",
+            "2, 3, 5, 1",
+            "2, 3, 6, 1",
+            "2, 3, 7, 1",
+            "2, 4, 8, 1",
+            "2, 7, 9, 2"
+    })
+    void getPromotionGiveawayCount(int buyQuantityForPromotion, int promotionStockQuantity, int purchaseQuantity, int promotionGiveawayCount) {
+        Product product = new Product("콜라", 1000);
+        Promotion promotion = new Promotion(PromotionType.BUY_N_GET_ONE_FREE, buyQuantityForPromotion, 1, LocalDate.of(2024, 11, 9), LocalDate.of(2024, 11, 15));
+        ProductInventory productInventory = new ProductInventory(product, promotion, 10, promotionStockQuantity);
+        assertThat(productInventory.getPromotionGiveawayCount(purchaseQuantity)).isEqualTo(promotionGiveawayCount);
+    }
 }
