@@ -32,24 +32,10 @@ public class ProductInventory {
         if (purchaseQuantity >= promotionStockQuantity) {
             return 0;
         }
-        if (promotion.getBuy() > purchaseQuantity) {
-            return 0;
+        if ((purchaseQuantity + promotion.getGet()) % (promotion.getBuy() + promotion.getGet()) == 0) {
+            return promotion.getGet();
         }
-        int recommendedAdditionalPurchaseQuantity = 0;
-        if (promotion.getBuy() == 1) {
-            if (purchaseQuantity % 2 == 0) {
-                return 0;
-            }
-            return 1;
-        }
-        // 프로모션 적용이 가능한 상품에 대해 고객이 해당 수량만큼 가져오지 않았을 경우, 무료로 받을 수 있는 상품 개수 반환
-        if (purchaseQuantity % promotion.getBuy() == 0) {
-            recommendedAdditionalPurchaseQuantity = purchaseQuantity / promotion.getBuy() * promotion.getGet();
-        }
-        if (purchaseQuantity + recommendedAdditionalPurchaseQuantity < promotionStockQuantity) {
-            return recommendedAdditionalPurchaseQuantity;
-        }
-        return promotionStockQuantity - purchaseQuantity;
+        return 0;
     }
 
     public int getPromotionNonApplicablePurchaseQuantity(int purchaseQuantity) {
@@ -59,7 +45,10 @@ public class ProductInventory {
         if (purchaseQuantity < promotionStockQuantity) {
             return 0;
         }
-        int availablePromotionStockQuantity =(promotionStockQuantity  / (this.promotion.getBuy() + this.promotion.getGet())) * (this.promotion.getBuy() + this.promotion.getGet());
-        return purchaseQuantity - availablePromotionStockQuantity;
+        return purchaseQuantity - getPromotionApplicablePurchaseQuantity(purchaseQuantity);
+    }
+
+    private int getPromotionApplicablePurchaseQuantity(int purchaseQuantity) {
+        return (promotionStockQuantity  / (this.promotion.getBuy() + this.promotion.getGet())) * (this.promotion.getBuy() + this.promotion.getGet());
     }
 }
