@@ -1,30 +1,13 @@
 package store.domain.product;
 
-import java.util.Objects;
-
-public class Product {
+public abstract class Product {
     private final String name;
     private final int price;
+    private final int quantity;
 
-    public Product(String name, int price) {
+    public Product(String name, int price, int quantity) {
         this.name = name;
         this.price = price;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Product product = (Product) o;
-        return Objects.equals(name, product.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(name);
+        this.quantity = quantity;
     }
 }
