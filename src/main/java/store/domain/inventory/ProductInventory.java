@@ -1,5 +1,7 @@
 package store.domain.inventory;
 
+import java.time.LocalDate;
+import java.util.Objects;
 import store.common.exception.InvalidPurchaseQuantityException;
 import store.domain.product.Product;
 import store.domain.promotion.Promotion;
@@ -25,8 +27,12 @@ public class ProductInventory {
         }
     }
 
+    public boolean hasPromotion() {
+        return Objects.nonNull(promotion);
+    }
+
     public int recommendAdditionalPurchase(int purchaseQuantity) {
-        if (this.promotion == null) {
+        if (this.promotion == null || !promotion.isApplicable(LocalDate.now())) {
             return 0;
         }
         if (purchaseQuantity >= promotionStockQuantity) {
@@ -39,7 +45,7 @@ public class ProductInventory {
     }
 
     public int getPromotionNonApplicablePurchaseQuantity(int purchaseQuantity) {
-        if (this.promotion == null) {
+        if (this.promotion == null || !promotion.isApplicable(LocalDate.now())) {
             return 0;
         }
         if (purchaseQuantity < this.promotionStockQuantity) {
@@ -49,10 +55,14 @@ public class ProductInventory {
     }
 
     public int getPromotionGiveawayCount(int purchaseQuantity) {
-        if (this.promotion == null) {
+        if (this.promotion == null || !promotion.isApplicable(LocalDate.now())) {
             return 0;
         }
         return (Math.min(promotionStockQuantity, purchaseQuantity) / (this.promotion.getBuy() + this.promotion.getGet())) * this.promotion.getGet();
+    }
+
+    public Product getProduct() {
+        return product;
     }
 
     private int getPromotionApplicablePurchaseQuantity() {
