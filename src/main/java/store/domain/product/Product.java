@@ -11,6 +11,10 @@ public class Product {
         this.price = price;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
