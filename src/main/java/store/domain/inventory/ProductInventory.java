@@ -20,24 +20,46 @@ public class ProductInventory {
     }
 
     public void validateStockAvailable(int purchaseQuantity) {
-        if(totalStockQuantitiy < purchaseQuantity) {
+        if (totalStockQuantitiy < purchaseQuantity) {
             throw new InvalidPurchaseQuantityException(this.product, this.totalStockQuantitiy, purchaseQuantity);
         }
     }
 
     public int recommendAdditionalPurchase(int purchaseQuantity) {
-        if(this.promotion == null) return 0;
-        if(promotion.getBuy() > purchaseQuantity) {
+        if (this.promotion == null) {
+            return 0;
+        }
+        if (purchaseQuantity >= promotionStockQuantity) {
+            return 0;
+        }
+        if (promotion.getBuy() > purchaseQuantity) {
             return 0;
         }
         int recommendedAdditionalPurchaseQuantity = 0;
+        if (promotion.getBuy() == 1) {
+            if (purchaseQuantity % 2 == 0) {
+                return 0;
+            }
+            return 1;
+        }
         // 프로모션 적용이 가능한 상품에 대해 고객이 해당 수량만큼 가져오지 않았을 경우, 무료로 받을 수 있는 상품 개수 반환
-        if(purchaseQuantity % promotion.getBuy() == 0) {
+        if (purchaseQuantity % promotion.getBuy() == 0) {
             recommendedAdditionalPurchaseQuantity = purchaseQuantity / promotion.getBuy() * promotion.getGet();
         }
-        if(purchaseQuantity + recommendedAdditionalPurchaseQuantity < promotionStockQuantity) {
+        if (purchaseQuantity + recommendedAdditionalPurchaseQuantity < promotionStockQuantity) {
             return recommendedAdditionalPurchaseQuantity;
         }
         return promotionStockQuantity - purchaseQuantity;
+    }
+
+    public int getPromotionNonApplicablePurchaseQuantity(int purchaseQuantity) {
+        if (this.promotion == null) {
+            return 0;
+        }
+        if (purchaseQuantity < promotionStockQuantity) {
+            return 0;
+        }
+        int availablePromotionStockQuantity =(promotionStockQuantity  / (this.promotion.getBuy() + this.promotion.getGet())) * (this.promotion.getBuy() + this.promotion.getGet());
+        return purchaseQuantity - availablePromotionStockQuantity;
     }
 }
