@@ -19,4 +19,8 @@ public class Order {
         order.put(product, order.get(product) - promotionNonApplicablePurchaseQuantity);
         return this;
     }
+
+    public Map<Product, Integer> getOrder() {
+        return order;
+    }
 }
