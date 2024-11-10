@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import store.common.exception.InvalidConfirmResponseException;
 import store.common.exception.InvalidFileException;
 import store.common.exception.InvalidOrderFormException;
@@ -96,15 +97,14 @@ public class InputHandler {
         return Console.readLine().trim();
     }
 
-    private BufferedReader readFile(String fileName) throws IOException {
-        FileInputStream fileInputStream;
+    private BufferedReader readFile(String fileName) {
         try {
-            fileInputStream = new FileInputStream(getClass().getClassLoader().getResource(fileName).getFile());
-        } catch (FileNotFoundException e) {
+            FileInputStream fileInputStream = new FileInputStream(
+                    Objects.requireNonNull(getClass().getClassLoader().getResource(fileName)).getFile());
+            return new BufferedReader(new InputStreamReader(fileInputStream));
+        } catch (IOException | NullPointerException e) {
             throw new InvalidFileException(fileName, e);
         }
-        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-        return new BufferedReader(inputStreamReader);
     }
 
 
