@@ -1,10 +1,10 @@
 package store.domain.inventory;
 
-import java.time.LocalDate;
 import java.util.Objects;
 import store.common.exception.InvalidPurchaseQuantityException;
 import store.domain.product.Product;
 import store.domain.promotion.Promotion;
+import camp.nextstep.edu.missionutils.DateTimes;
 
 public class ProductInventory {
     private final Product product;
@@ -13,12 +13,27 @@ public class ProductInventory {
     private int promotionStockQuantity;
     private int totalStockQuantity;
 
+    public ProductInventory(Product product, Promotion promotion) {
+        this.product = product;
+        this.promotion = promotion;
+    }
+
     public ProductInventory(Product product, Promotion promotion, int stockQuantity, int promotionStockQuantity) {
         this.product = product;
         this.promotion = promotion;
         this.stockQuantity = stockQuantity;
         this.promotionStockQuantity = promotionStockQuantity;
         this.totalStockQuantity = stockQuantity + promotionStockQuantity;
+    }
+
+    public void updateStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
+        this.totalStockQuantity = stockQuantity + this.promotionStockQuantity;
+    }
+
+    public void updatePromotionStockQuantity(int promotionStockQuantity) {
+        this.promotionStockQuantity = promotionStockQuantity;
+        this.totalStockQuantity = this.stockQuantity + promotionStockQuantity;
     }
 
     public void validateStockAvailable(int purchaseQuantity) {
@@ -44,7 +59,7 @@ public class ProductInventory {
     }
 
     public int recommendAdditionalPurchase(int purchaseQuantity) {
-        if (this.promotion == null || !promotion.isApplicable(LocalDate.now())) {
+        if (this.promotion == null || !promotion.isApplicable(DateTimes.now())) {
             return 0;
         }
         if (purchaseQuantity >= promotionStockQuantity) {
@@ -57,7 +72,7 @@ public class ProductInventory {
     }
 
     public int getPromotionNonApplicablePurchaseQuantity(int purchaseQuantity) {
-        if (this.promotion == null || !promotion.isApplicable(LocalDate.now())) {
+        if (this.promotion == null || !promotion.isApplicable(DateTimes.now())) {
             return 0;
         }
         if (purchaseQuantity < this.promotionStockQuantity) {
@@ -67,10 +82,14 @@ public class ProductInventory {
     }
 
     public int getPromotionGiveawayCount(int purchaseQuantity) {
-        if (this.promotion == null || !promotion.isApplicable(LocalDate.now())) {
+        if (this.promotion == null || !promotion.isApplicable(DateTimes.now())) {
             return 0;
         }
         return (Math.min(promotionStockQuantity, purchaseQuantity) / (this.promotion.getBuy() + this.promotion.getGet())) * this.promotion.getGet();
+    }
+
+    public Promotion getPromotion() {
+        return promotion;
     }
 
     public Product getProduct() {
@@ -89,9 +108,10 @@ public class ProductInventory {
         return this.stockQuantity;
     }
 
-
     private int getPromotionApplicablePurchaseQuantity(int purchaseQuantity) {
-        if(this.promotion == null) return 0;
+        if (this.promotion == null || !promotion.isApplicable(DateTimes.now())) {
+            return 0;
+        }
         return (Math.min(this.promotionStockQuantity, purchaseQuantity)  / (this.promotion.getBuy() + this.promotion.getGet())) * (this.promotion.getBuy() + this.promotion.getGet());
     }
 }
