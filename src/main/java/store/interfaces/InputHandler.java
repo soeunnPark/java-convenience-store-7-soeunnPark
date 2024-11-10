@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,13 +100,16 @@ public class InputHandler {
 
     private BufferedReader readFile(String fileName) {
         try {
-            FileInputStream fileInputStream = new FileInputStream(
-                    Objects.requireNonNull(getClass().getClassLoader().getResource(fileName)).getFile());
-            return new BufferedReader(new InputStreamReader(fileInputStream));
-        } catch (IOException | NullPointerException e) {
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
+            if (inputStream == null) {
+                throw new FileNotFoundException(fileName);
+            }
+            return new BufferedReader(new InputStreamReader(inputStream));
+        } catch (IOException e) {
             throw new InvalidFileException(fileName, e);
         }
     }
+
 
 
     public boolean askContinue() {
