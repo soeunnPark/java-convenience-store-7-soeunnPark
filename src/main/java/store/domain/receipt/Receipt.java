@@ -1,9 +1,6 @@
 package store.domain.receipt;
 
-import java.util.HashMap;
 import java.util.Map;
-import store.domain.inventory.ProductInventory;
-import store.domain.inventory.StoreInventory;
 import store.domain.order.Order;
 import store.domain.product.Product;
 
@@ -15,12 +12,12 @@ public class Receipt {
     private final int membershipDiscount;
     private final int payment;
 
-    public Receipt(Order order, StoreInventory storeInventory) {
+    public Receipt(Order order, Map<Product, Integer> promotionGiveaway, int membershipDiscount) {
         this.order = order;
         this.totalPurchaseAmount = calculateTotalPurchaseAmount();
-        this.promotionGiveaway = getPromotionGiveaway(storeInventory);
+        this.promotionGiveaway = promotionGiveaway;
         this.promotionDiscount = calculatePromotionDiscount(promotionGiveaway);
-        this.membershipDiscount = calculateMembershipDiscount(storeInventory);
+        this.membershipDiscount = membershipDiscount;
         this.payment = totalPurchaseAmount - promotionDiscount - membershipDiscount;
     }
 
@@ -38,33 +35,6 @@ public class Receipt {
             sum += product.getPrice() * order.getOrder().get(product);
         }
         return sum;
-    }
-
-    private Map<Product, Integer> getPromotionGiveaway(StoreInventory storeInventory) {
-        Map<Product, Integer> promotionGiveaway = new HashMap<>();
-        for (Product product : order.getOrder().keySet()) {
-            ProductInventory productInventory = storeInventory.getProductInventory(product);
-            int promotionGiveawayCount = productInventory.getPromotionGiveawayCount(this.order.getOrder().get(product));
-            if (promotionGiveawayCount > 0) {
-                promotionGiveaway.put(product, promotionGiveawayCount);
-            }
-        }
-        return promotionGiveaway;
-    }
-
-    private int calculateMembershipDiscount(StoreInventory storeInventory) {
-        int purchaseAmountForMembershipDiscount = 0;
-        for (Product product : order.getOrder().keySet()) {
-            ProductInventory productInventory = storeInventory.getProductInventory(product);
-            if (productInventory.hasPromotion()) {
-                int promotionNonApplicablePurchaseQuantity = productInventory.getPromotionNonApplicablePurchaseQuantity(
-                        this.order.getOrder().get(product));
-                purchaseAmountForMembershipDiscount += promotionNonApplicablePurchaseQuantity * product.getPrice();
-                continue;
-            }
-            purchaseAmountForMembershipDiscount += order.getOrder().get(product) * product.getPrice();
-        }
-        return (int) (purchaseAmountForMembershipDiscount * 0.3);
     }
 
     public int getTotalPurchaseAmount() {
