@@ -42,15 +42,20 @@ public class OrderController {
 
     public void start() {
         StoreInventory storeInventory = makeStore();
-        while(true) {
+        do {
+            printStore(storeInventory);
             Order order = getOrder(storeInventory);
             modifyOrder(order, storeInventory);
             boolean isMembership = askForMembership();
             purchase(isMembership, order, storeInventory);
-            if(!inputHandler.askContinue()) {
-                break;
-            }
-        }
+        } while (inputHandler.askContinue());
+    }
+
+    private void printStore(StoreInventory storeInventory) {
+        List<ProductInventoryResponse> productsInventoryResponse = storeInventory.getStoreInventory().stream()
+                .map(ProductInventoryResponse::of)
+                .toList();
+        outputHandler.printStoreInventory(productsInventoryResponse);
     }
 
     private boolean askForMembership() {
@@ -61,12 +66,7 @@ public class OrderController {
         List<ProductRequest> productRequests = inputHandler.readProducts();
         List<PromotionRequest> promotionRequests = inputHandler.readPromotions();
 
-        StoreInventory storeInventory = storeInventoryService.makeStoreInventory(productRequests, promotionRequests);
-        List<ProductInventoryResponse> productsInventoryResponse = storeInventory.getStoreInventory().stream()
-                .map(ProductInventoryResponse::of)
-                .toList();
-        outputHandler.printStoreInventory(productsInventoryResponse);
-        return storeInventory;
+        return storeInventoryService.makeStoreInventory(productRequests, promotionRequests);
     }
 
     private Order getOrder(StoreInventory storeInventory) {
