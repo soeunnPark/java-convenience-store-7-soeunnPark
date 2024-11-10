@@ -42,10 +42,15 @@ public class OrderController {
 
     public void start() {
         StoreInventory storeInventory = makeStore();
-        Order order = getOrder(storeInventory);
-       modifyOrder(order, storeInventory);
-        boolean isMembership = askForMembership();
-        purchase(isMembership, order, storeInventory);
+        while(true) {
+            Order order = getOrder(storeInventory);
+            modifyOrder(order, storeInventory);
+            boolean isMembership = askForMembership();
+            purchase(isMembership, order, storeInventory);
+            if(!inputHandler.askContinue()) {
+                break;
+            }
+        }
     }
 
     private boolean askForMembership() {
