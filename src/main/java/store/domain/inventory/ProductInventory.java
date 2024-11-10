@@ -9,22 +9,34 @@ import store.domain.promotion.Promotion;
 public class ProductInventory {
     private final Product product;
     private final Promotion promotion;
-    private int stockQuantitiy;
+    private int stockQuantity;
     private int promotionStockQuantity;
-    private int totalStockQuantitiy;
+    private int totalStockQuantity;
 
     public ProductInventory(Product product, Promotion promotion, int stockQuantity, int promotionStockQuantity) {
         this.product = product;
         this.promotion = promotion;
-        this.stockQuantitiy = stockQuantity;
+        this.stockQuantity = stockQuantity;
         this.promotionStockQuantity = promotionStockQuantity;
-        this.totalStockQuantitiy = stockQuantity + promotionStockQuantity;
+        this.totalStockQuantity = stockQuantity + promotionStockQuantity;
     }
 
     public void validateStockAvailable(int purchaseQuantity) {
-        if (totalStockQuantitiy < purchaseQuantity) {
-            throw new InvalidPurchaseQuantityException(this.product, this.totalStockQuantitiy, purchaseQuantity);
+        if (totalStockQuantity < purchaseQuantity) {
+            throw new InvalidPurchaseQuantityException(this.product, this.totalStockQuantity, purchaseQuantity);
         }
+    }
+
+    public void purchase(int purchaseQuantity) {
+        if(this.promotion == null) {
+            stockQuantity -= purchaseQuantity;
+            totalStockQuantity -= purchaseQuantity;
+            return;
+        }
+        int promotionApplicablePurchaseQuantity = getPromotionApplicablePurchaseQuantity(purchaseQuantity);
+        this.promotionStockQuantity -= promotionApplicablePurchaseQuantity;
+        this.stockQuantity -= (purchaseQuantity - promotionApplicablePurchaseQuantity);
+        this.totalStockQuantity -= purchaseQuantity;
     }
 
     public boolean hasPromotion() {
@@ -51,7 +63,7 @@ public class ProductInventory {
         if (purchaseQuantity < this.promotionStockQuantity) {
             return 0;
         }
-        return purchaseQuantity - getPromotionApplicablePurchaseQuantity();
+        return purchaseQuantity - getPromotionApplicablePurchaseQuantity(purchaseQuantity);
     }
 
     public int getPromotionGiveawayCount(int purchaseQuantity) {
@@ -65,7 +77,21 @@ public class ProductInventory {
         return product;
     }
 
-    private int getPromotionApplicablePurchaseQuantity() {
-        return (this.promotionStockQuantity  / (this.promotion.getBuy() + this.promotion.getGet())) * (this.promotion.getBuy() + this.promotion.getGet());
+    public int getTotalStockQuantity() {
+        return this.totalStockQuantity;
+    }
+
+    public int getPromotionStockQuantity() {
+        return this.promotionStockQuantity;
+    }
+
+    public int getStockQuantity() {
+        return this.stockQuantity;
+    }
+
+
+    private int getPromotionApplicablePurchaseQuantity(int purchaseQuantity) {
+        if(this.promotion == null) return 0;
+        return (Math.min(this.promotionStockQuantity, purchaseQuantity)  / (this.promotion.getBuy() + this.promotion.getGet())) * (this.promotion.getBuy() + this.promotion.getGet());
     }
 }

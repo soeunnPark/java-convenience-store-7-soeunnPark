@@ -81,4 +81,23 @@ class ProductInventoryTest {
         ProductInventory productInventory = new ProductInventory(product, promotion, 10, promotionStockQuantity);
         assertThat(productInventory.getPromotionGiveawayCount(purchaseQuantity)).isEqualTo(promotionGiveawayCount);
     }
+
+    @DisplayName("구매를 진행한다.")
+    @ParameterizedTest
+    @CsvSource( {
+            "3, 10, 10, 7, 17",
+            "5, 3, 8, 0, 8",
+            "8, 7, 8, 1, 9",
+            "11, 3, 2, 0, 2",
+            "12, 8, 4, 2, 6"
+    })
+    void purchase(int purchaseQuantity, int promotionStockQuantity, int expectedStockQuantity, int expectedPromotionStockQuantity, int expectedTotalStockQuantity) {
+        Product product = new Product("콜라", 1000);
+        Promotion promotion = new Promotion(PromotionType.BUY_N_GET_ONE_FREE, 2, 1, LocalDate.of(2024, 11, 9), LocalDate.of(2024, 11, 15));
+        ProductInventory productInventory = new ProductInventory(product, promotion, 10, promotionStockQuantity);
+        productInventory.purchase(purchaseQuantity);
+        assertThat(productInventory.getStockQuantity()).isEqualTo(expectedStockQuantity);
+        assertThat(productInventory.getPromotionStockQuantity()).isEqualTo(expectedPromotionStockQuantity);
+        assertThat(productInventory.getTotalStockQuantity()).isEqualTo(expectedTotalStockQuantity);
+    }
 }
