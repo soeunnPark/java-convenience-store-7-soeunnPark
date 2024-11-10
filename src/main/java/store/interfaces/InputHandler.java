@@ -2,14 +2,12 @@ package store.interfaces;
 
 import camp.nextstep.edu.missionutils.Console;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import store.common.exception.InvalidConfirmResponseException;
 import store.common.exception.InvalidFileException;
 import store.common.exception.InvalidOrderFormException;
@@ -109,8 +107,6 @@ public class InputHandler {
             throw new InvalidFileException(fileName, e);
         }
     }
-
-
 
     public boolean askContinue() {
         System.out.println("감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)");
