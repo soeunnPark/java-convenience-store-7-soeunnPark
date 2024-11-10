@@ -48,9 +48,11 @@ public class ProductInventory {
             totalStockQuantity -= purchaseQuantity;
             return;
         }
-        int promotionApplicablePurchaseQuantity = getPromotionApplicablePurchaseQuantity(purchaseQuantity);
+        int promotionApplicablePurchaseQuantity = Math.min(purchaseQuantity, this.promotionStockQuantity);
+
         this.promotionStockQuantity -= promotionApplicablePurchaseQuantity;
-        this.stockQuantity -= (purchaseQuantity - promotionApplicablePurchaseQuantity);
+        int remainingPurchaseQuantity = purchaseQuantity - promotionApplicablePurchaseQuantity;
+        this.stockQuantity -= remainingPurchaseQuantity;
         this.totalStockQuantity -= purchaseQuantity;
     }
 
