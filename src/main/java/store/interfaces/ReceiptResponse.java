@@ -11,6 +11,7 @@ public record ReceiptResponse(
         List<OrderResponse> ordersResponse,
         List<PromotionGiveawayResponse> promotionGiveawaysResponse,
         int totalPurchaseAmount,
+        int totalPurchaseCount,
         int promotionDiscount,
         int membershipDiscount,
         int payment
@@ -20,6 +21,7 @@ public record ReceiptResponse(
         return new ReceiptResponse(OrderResponse.from(order),
                 PromotionGiveawayResponse.from(receipt.getPromotionGiveaway()),
                 receipt.getTotalPurchaseAmount(),
+                receipt.getTotalPurchaseCount(),
                 receipt.getPromotionDiscount(),
                 receipt.getMembershipDiscount(),
                 receipt.getPayment()
