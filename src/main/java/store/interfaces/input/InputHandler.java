@@ -56,7 +56,7 @@ public class InputHandler {
         List<OrderRequest> ordersRequest = new ArrayList<>();
         String[] orders = readLineWithoutSpace().split(",");
         for (String s : orders) {
-            if (!s.matches("^\\[.+?-\\d+\\]$")) {
+            if (!s.matches("^\\[.+?-\\d+]$")) {
                 throw new InvalidOrderFormException(s);
             }
             String[] order = s.split("-");
