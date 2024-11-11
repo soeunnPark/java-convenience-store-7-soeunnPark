@@ -12,11 +12,10 @@ public class ProductService {
     }
 
     public void createProducts(List<ProductRequest> productRequests) {
-        List<Product> products = productRequests.stream()
+        productRequests.stream()
                 .filter(productRequest -> !productRepository.existByProductName(productRequest.productName()))
                 .map(productRequest -> new Product(productRequest.productName(), productRequest.productPrice()))
-                .toList();
-        products.forEach(productRepository::save);
+                .forEach(productRepository::save);
     }
 
     public Product findProduct(String productName) {

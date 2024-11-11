@@ -9,7 +9,6 @@ import java.util.List;
 import store.common.exception.InvalidConfirmResponseException;
 import store.common.exception.InvalidFileException;
 import store.common.exception.InvalidOrderFormException;
-import store.interfaces.AdditionalPurchase.Request;
 
 public class InputHandler {
 
@@ -60,45 +59,40 @@ public class InputHandler {
         return ordersRequest;
     }
 
-    public AdditionalPurchase.Request askAdditionalPurchaseForPromotion(
-            AdditionalPurchase.Response additionalPurchaseResponse) {
+    public boolean askAdditionalPurchaseForPromotion(
+            AdditionalPurchaseResponse additionalPurchaseResponse) {
         System.out.println("현재 " + additionalPurchaseResponse.productName() + "은(는) "
                 + additionalPurchaseResponse.recommendedAdditionalPurchaseQuantity()
                 + "개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)");
         String input = readLineWithoutSpace();
-        AdditionalPurchase.Request confirmAdditionalPurchase = new Request(input);
-        confirmAdditionalPurchase.valid();
-        return confirmAdditionalPurchase;
+        return convertInputForConfirm(input);
     }
 
-    public PromotionNonApplicablePurchase.Request askExcludeNonPromotion(
-            PromotionNonApplicablePurchase.Response promotionNonApplicablePurchaseResponse) {
+    public boolean askExcludeNonPromotion(PromotionNonApplicablePurchaseResponse promotionNonApplicablePurchaseResponse) {
         System.out.println("현재 " + promotionNonApplicablePurchaseResponse.productName() + " "
                 + promotionNonApplicablePurchaseResponse.promotionNonApplicablePurchaseQuantity()
                 + "개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)");
         String input = readLineWithoutSpace();
-        PromotionNonApplicablePurchase.Request confirmExcludeNonPromotion = new PromotionNonApplicablePurchase.Request(
-                input);
-        confirmExcludeNonPromotion.valid();
-        return confirmExcludeNonPromotion;
+        return convertInputForConfirm(input);
     }
 
-    public String readMembership() {
+    public boolean readMembership() {
         System.out.println("멤버십 할인을 받으시겠습니까? (Y/N)");
         String input = readLineWithoutSpace();
-        if(!input.equals("Y") && !input.equals("N")) {
-            throw new InvalidConfirmResponseException(input);
-        }
-        return input;
+        return convertInputForConfirm(input);
+    }
+
+    public boolean askContinue() {
+        System.out.println("감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)");
+        String input = readLineWithoutSpace();
+        return convertInputForConfirm(input);
     }
 
     private String readLineWithoutSpace() {
         return Console.readLine().trim();
     }
 
-    public boolean askContinue() {
-        System.out.println("감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)");
-        String input = readLineWithoutSpace();
+    private boolean convertInputForConfirm(String input) {
         if(input.equals("Y")) {
             return true;
         } else if(input.equals("N")) {

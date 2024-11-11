@@ -11,15 +11,13 @@ import store.domain.product.ProductService;
 import store.domain.promotion.PromotionService;
 import store.domain.receipt.Receipt;
 import store.domain.receipt.ReceiptService;
-import store.interfaces.AdditionalPurchase;
+import store.interfaces.AdditionalPurchaseResponse;
 import store.interfaces.InputHandler;
 import store.interfaces.OrderRequest;
 import store.interfaces.OutputHandler;
 import store.interfaces.ProductInventoryResponse;
 import store.interfaces.ProductRequest;
-import store.interfaces.PromotionNonApplicablePurchase;
-import store.interfaces.PromotionNonApplicablePurchase.Request;
-import store.interfaces.PromotionNonApplicablePurchase.Response;
+import store.interfaces.PromotionNonApplicablePurchaseResponse;
 import store.interfaces.PromotionRequest;
 import store.interfaces.ReceiptResponse;
 
@@ -67,7 +65,13 @@ public class OrderController {
     }
 
     private boolean askForMembership() {
-        return inputHandler.readMembership().equals("Y");
+        while(true) {
+            try {
+                return inputHandler.readMembership();
+            } catch (ConvenienceStoreException e) {
+                System.out.println(e.getErrorMessageForClient());
+            }
+        }
     }
 
     private List<ProductInventory> makeStore() {
@@ -108,42 +112,35 @@ public class OrderController {
     }
 
     private void excludeNonPromotionProduct(Order order, Product product, Integer purchaseQuantity) {
-        int promotionNonApplicablePurchaseQuantity = orderService.getPromotionNonApplicablePurchaseQuantity(product,
-                purchaseQuantity);
+        int promotionNonApplicablePurchaseQuantity = orderService.getPromotionNonApplicablePurchaseQuantity(product, purchaseQuantity);
         if (promotionNonApplicablePurchaseQuantity > 0) {
-            PromotionNonApplicablePurchase.Request confirmExcludeNonPromotion;
             while (true) {
                 try {
-                    confirmExcludeNonPromotion = inputHandler.askExcludeNonPromotion(
-                            Response.of(product, promotionNonApplicablePurchaseQuantity));
+                    if(!inputHandler.askExcludeNonPromotion(PromotionNonApplicablePurchaseResponse.of(product, promotionNonApplicablePurchaseQuantity))) {
+                        order.excludeNonPromotionCount(product, promotionNonApplicablePurchaseQuantity);
+                    }
                     break;
                 } catch (ConvenienceStoreException e) {
                     System.out.println(e.getErrorMessageForClient());
                 }
             }
-            if (confirmExcludeNonPromotion.excludeNonPromotion().equals("N")) {
-                order.excludeNonPromotionCount(product, promotionNonApplicablePurchaseQuantity);
-            }
             outputHandler.printNewLine();
         }
-
     }
 
     private void addProductForPromotion(Order order, Product product, Integer purchaseQuantity) {
         int recommendAdditionalPurchaseQuantity = orderService.recommendAdditionalPurchase(product, purchaseQuantity);
         if (recommendAdditionalPurchaseQuantity > 0) {
-            AdditionalPurchase.Request confirmAdditionalPurchase;
             while (true) {
                 try {
-                    confirmAdditionalPurchase = inputHandler.askAdditionalPurchaseForPromotion(
-                            AdditionalPurchase.Response.of(product, recommendAdditionalPurchaseQuantity));
+                    if(inputHandler.askAdditionalPurchaseForPromotion(
+                            AdditionalPurchaseResponse.of(product, recommendAdditionalPurchaseQuantity))) {
+                        order.addPurchaseCount(product, recommendAdditionalPurchaseQuantity);
+                    }
                     break;
                 } catch (ConvenienceStoreException e) {
                     System.out.println(e.getErrorMessageForClient());
                 }
-            }
-            if (confirmAdditionalPurchase.addGiveaway().equals("Y")) {
-                order.addPurchaseCount(product, recommendAdditionalPurchaseQuantity);
             }
             outputHandler.printNewLine();
         }

@@ -16,7 +16,7 @@ public class ProductRepository {
     }
 
     public boolean existByProductName(String productName) {
-        return products.stream().anyMatch(product -> product.getName().equals(productName));
+        return this.products.stream().anyMatch(product -> product.getName().equals(productName));
     }
 
     public Product findByProductName(String productName) {
