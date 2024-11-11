@@ -8,7 +8,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import store.domain.product.Product;
 import store.domain.promotion.Promotion;
-import store.domain.promotion.PromotionType;
 
 class ProductInventoryTest {
 
@@ -23,7 +22,9 @@ class ProductInventoryTest {
     void recommendAdditionalPurchase(int purchaseQuantity, int recommendedAdditionalPurchaseQuantity) {
         Product product = new Product("콜라", 1000);
         Promotion promotion = new Promotion("탄산2+1", 2, 1, LocalDate.of(2024, 11, 9), LocalDate.of(2024, 11, 15));
-        ProductInventory productInventory = new ProductInventory(product, promotion, 10, 10);
+        ProductInventory productInventory = new ProductInventory(product, promotion);
+        productInventory.updateStockQuantity(10);
+        productInventory.updatePromotionStockQuantity(10);
         assertThat(productInventory.recommendAdditionalPurchase(purchaseQuantity)).isEqualTo(recommendedAdditionalPurchaseQuantity);
     }
 
@@ -37,7 +38,9 @@ class ProductInventoryTest {
     void recommendAdditionalPurchase_whenBuyCountIsOne(int purchaseQuantity, int recommendedAdditionalPurchaseQuantity) {
         Product product = new Product("콜라", 1000);
         Promotion promotion = new Promotion("탄산1+1", 1, 1, LocalDate.of(2024, 11, 9), LocalDate.of(2024, 11, 15));
-        ProductInventory productInventory = new ProductInventory(product, promotion, 10, 10);
+        ProductInventory productInventory = new ProductInventory(product, promotion);
+        productInventory.updateStockQuantity(10);
+        productInventory.updatePromotionStockQuantity(10);
         assertThat(productInventory.recommendAdditionalPurchase(purchaseQuantity)).isEqualTo(recommendedAdditionalPurchaseQuantity);
     }
 
@@ -57,7 +60,9 @@ class ProductInventoryTest {
     void getPromotionNonApplicablePurchaseQuantity(int buyQuantityForPromotion, String promotionName, int promotionStockQuantity, int purchaseQuantity, int promotionNonApplicablePurchaseQuantity) {
         Product product = new Product("콜라", 1000);
         Promotion promotion = new Promotion( promotionName, buyQuantityForPromotion, 1, LocalDate.of(2024, 11, 9), LocalDate.of(2024, 11, 15));
-        ProductInventory productInventory = new ProductInventory(product, promotion, 10, promotionStockQuantity);
+        ProductInventory productInventory = new ProductInventory(product, promotion);
+        productInventory.updateStockQuantity(10);
+        productInventory.updatePromotionStockQuantity(promotionStockQuantity);
         assertThat(productInventory.getPromotionNonApplicablePurchaseQuantity(purchaseQuantity)).isEqualTo(promotionNonApplicablePurchaseQuantity);
     }
 
@@ -78,7 +83,9 @@ class ProductInventoryTest {
     void getPromotionGiveawayCount(int buyQuantityForPromotion, int promotionStockQuantity, int purchaseQuantity, int promotionGiveawayCount) {
         Product product = new Product("콜라", 1000);
         Promotion promotion = new Promotion("탄산2+1", buyQuantityForPromotion, 1, LocalDate.of(2024, 11, 9), LocalDate.of(2024, 11, 15));
-        ProductInventory productInventory = new ProductInventory(product, promotion, 10, promotionStockQuantity);
+        ProductInventory productInventory = new ProductInventory(product, promotion);
+        productInventory.updateStockQuantity(10);
+        productInventory.updatePromotionStockQuantity(promotionStockQuantity);
         assertThat(productInventory.getPromotionGiveawayCount(purchaseQuantity)).isEqualTo(promotionGiveawayCount);
     }
 
@@ -94,7 +101,9 @@ class ProductInventoryTest {
     void purchase(int purchaseQuantity, int promotionStockQuantity, int expectedStockQuantity, int expectedPromotionStockQuantity, int expectedTotalStockQuantity) {
         Product product = new Product("콜라", 1000);
         Promotion promotion = new Promotion( "탄산2+1",2, 1, LocalDate.of(2024, 11, 9), LocalDate.of(2024, 11, 15));
-        ProductInventory productInventory = new ProductInventory(product, promotion, 10, promotionStockQuantity);
+        ProductInventory productInventory = new ProductInventory(product, promotion);
+        productInventory.updateStockQuantity(10);
+        productInventory.updatePromotionStockQuantity(promotionStockQuantity);
         productInventory.purchase(purchaseQuantity);
         assertThat(productInventory.getStockQuantity()).isEqualTo(expectedStockQuantity);
         assertThat(productInventory.getPromotionStockQuantity()).isEqualTo(expectedPromotionStockQuantity);

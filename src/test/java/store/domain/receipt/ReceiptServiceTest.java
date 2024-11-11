@@ -12,7 +12,6 @@ import store.domain.inventory.StoreInventory;
 import store.domain.order.Order;
 import store.domain.product.Product;
 import store.domain.promotion.Promotion;
-import store.domain.promotion.PromotionType;
 
 class ReceiptServiceTest {
 
@@ -22,11 +21,13 @@ class ReceiptServiceTest {
         Product cola = new Product("콜라", 1000);
         Promotion promotion = new Promotion(
                 "탄산2+1", 2, 1, LocalDate.of(2024, 11, 9), LocalDate.of(2024, 11, 15));
-        ProductInventory colaInventory = new ProductInventory(cola, promotion, 10, 10);
-
+        ProductInventory colaInventory = new ProductInventory(cola, promotion);
+        colaInventory.updateStockQuantity(10);
+        colaInventory.updatePromotionStockQuantity(10);
         Product energyBar = new Product("에너지바", 2000);
-        ProductInventory energyBarInventory = new ProductInventory(energyBar, null, 5, 0);
-
+        ProductInventory energyBarInventory = new ProductInventory(energyBar, null);
+        energyBarInventory.updateStockQuantity(5);
+        energyBarInventory.updatePromotionStockQuantity(0);
         StoreInventory storeInventory = new StoreInventory();
         storeInventory.addProductInventory(colaInventory);
         storeInventory.addProductInventory(energyBarInventory);

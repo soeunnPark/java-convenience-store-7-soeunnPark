@@ -15,14 +15,9 @@ public class ProductInventory {
     public ProductInventory(Product product, Promotion promotion) {
         this.product = product;
         this.promotion = promotion;
-    }
-
-    public ProductInventory(Product product, Promotion promotion, int stockQuantity, int promotionStockQuantity) {
-        this.product = product;
-        this.promotion = promotion;
-        this.stockQuantity = stockQuantity;
-        this.promotionStockQuantity = promotionStockQuantity;
-        this.totalStockQuantity = stockQuantity + promotionStockQuantity;
+        this.stockQuantity = 0;
+        this.promotionStockQuantity = 0;
+        this.totalStockQuantity = 0;
     }
 
     public void updateStockQuantity(int stockQuantity) {
@@ -36,7 +31,7 @@ public class ProductInventory {
     }
 
     public void validateStockAvailable(int purchaseQuantity) {
-        if(!promotion.isPromotionAvailable()) {
+        if(promotion != null && !promotion.isPromotionAvailable()) {
             if(stockQuantity < purchaseQuantity) {
                 throw new InvalidPurchaseQuantityException(this.product, this.stockQuantity, purchaseQuantity);
             }
