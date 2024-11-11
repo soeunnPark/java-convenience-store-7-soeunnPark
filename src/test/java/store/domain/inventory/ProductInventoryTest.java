@@ -87,9 +87,9 @@ class ProductInventoryTest {
     @CsvSource( {
             "3, 10, 10, 7, 17",
             "5, 3, 8, 0, 8",
-            "8, 7, 8, 1, 9",
+            "8, 7, 9, 0, 9",
             "11, 3, 2, 0, 2",
-            "12, 8, 4, 2, 6"
+            "12, 8, 6, 0, 6"
     })
     void purchase(int purchaseQuantity, int promotionStockQuantity, int expectedStockQuantity, int expectedPromotionStockQuantity, int expectedTotalStockQuantity) {
         Product product = new Product("콜라", 1000);
