@@ -2,6 +2,7 @@ package store;
 
 import store.domain.inventory.ProductInventoryRepository;
 import store.domain.inventory.ProductInventoryService;
+import store.interfaces.input.InputHandler;
 import store.interfaces.order.OrderController;
 import store.domain.order.OrderService;
 import store.domain.product.ProductRepository;

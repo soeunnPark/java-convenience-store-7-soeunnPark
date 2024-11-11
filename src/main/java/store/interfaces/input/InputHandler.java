@@ -1,4 +1,4 @@
-package store;
+package store.interfaces.input;
 
 import camp.nextstep.edu.missionutils.Console;
 import java.io.BufferedReader;
@@ -22,7 +22,7 @@ public class InputHandler {
     static final String PROMOTIONS_PATH = "src/main/resources/promotions.md";
     static final String DELIMITER = ",";
 
-    public List<ProductRequest> readProducts() {
+    public static List<ProductRequest> readProducts() {
         List<ProductRequest> productsRequest = new ArrayList<>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(PRODUCTS_PATH));
@@ -33,12 +33,12 @@ public class InputHandler {
             }
             br.close();
         } catch (IOException e) {
-            throw new InvalidFileException("products.md");
+            throw new InvalidFileException(PRODUCTS_PATH);
         }
         return productsRequest;
     }
 
-    public List<PromotionRequest> readPromotions() {
+    public static List<PromotionRequest> readPromotions() {
         List<PromotionRequest> promotionsRequest = new ArrayList<>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(PROMOTIONS_PATH));
@@ -50,7 +50,7 @@ public class InputHandler {
             }
             br.close();
         } catch (IOException e) {
-            throw new InvalidFileException("promotions.md");
+            throw new InvalidFileException(PROMOTIONS_PATH);
         }
         return promotionsRequest;
     }
