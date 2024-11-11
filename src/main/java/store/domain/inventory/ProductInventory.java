@@ -36,6 +36,12 @@ public class ProductInventory {
     }
 
     public void validateStockAvailable(int purchaseQuantity) {
+        if(!promotion.isPromotionAvailable()) {
+            if(stockQuantity < purchaseQuantity) {
+                throw new InvalidPurchaseQuantityException(this.product, this.stockQuantity, purchaseQuantity);
+            }
+            return;
+        }
         if (totalStockQuantity < purchaseQuantity) {
             throw new InvalidPurchaseQuantityException(this.product, this.totalStockQuantity, purchaseQuantity);
         }
