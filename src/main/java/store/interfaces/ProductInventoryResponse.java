@@ -18,7 +18,7 @@ public record ProductInventoryResponse(
                 productInventory.getProduct().getPrice(),
                 productInventory.getStockQuantity(),
                 productInventory.getPromotionStockQuantity(),
-                productInventory.hasPromotion() ? productInventory.getPromotion().getPromotionName() : null
+                productInventory.hasPromotion() ? productInventory.getPromotion().getName() : null
         );
     }
 }

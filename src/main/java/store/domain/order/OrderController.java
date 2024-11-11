@@ -9,6 +9,7 @@ import store.domain.inventory.StoreInventory;
 import store.domain.inventory.StoreInventoryService;
 import store.domain.product.Product;
 import store.domain.product.ProductService;
+import store.domain.promotion.PromotionService;
 import store.domain.receipt.Receipt;
 import store.domain.receipt.ReceiptService;
 import store.interfaces.AdditionalPurchase;
@@ -29,15 +30,18 @@ public class OrderController {
     private final StoreInventoryService storeInventoryService;
     private final ReceiptService receiptService;
     private final ProductService productService;
+    private final PromotionService promotionService;
 
 
     public OrderController(InputHandler inputHandler, OutputHandler outputHandler, ReceiptService receiptService,
-                           StoreInventoryService storeInventoryService, ProductService productService) {
+                           StoreInventoryService storeInventoryService, ProductService productService,
+                           PromotionService promotionService) {
         this.inputHandler = inputHandler;
         this.receiptService = receiptService;
         this.outputHandler = outputHandler;
         this.storeInventoryService = storeInventoryService;
         this.productService = productService;
+        this.promotionService = promotionService;
     }
 
     public void start() {
@@ -66,7 +70,8 @@ public class OrderController {
     private StoreInventory makeStore() {
         List<ProductRequest> productRequests = inputHandler.readProducts();
         List<PromotionRequest> promotionRequests = inputHandler.readPromotions();
-
+        productService.createProducts(productRequests);
+        promotionService.createPromotion(promotionRequests);
         return storeInventoryService.makeStoreInventory(productRequests, promotionRequests);
     }
 

@@ -17,7 +17,7 @@ public class PromotionRepository {
 
     public Optional<Promotion> findPromotion(String promotionName) {
         return promotions.stream()
-                .filter(promotion -> promotion.getPromotionName().equals(promotionName))
+                .filter(promotion -> promotion.getName().equals(promotionName))
                 .findAny();
     }
 }

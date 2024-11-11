@@ -23,30 +23,14 @@ public class StoreInventoryService {
 
     public StoreInventory makeStoreInventory(List<ProductRequest> productRequests, List<PromotionRequest> promotionRequests) {
 
-        List<Promotion> promotions = promotionRequests.stream()
-                .map(promotionRequest -> new Promotion(promotionRequest.promotionType(),
-                        promotionRequest.promotionName(),
-                        promotionRequest.buy(),
-                        promotionRequest.get(),
-                        promotionRequest.startDate(),
-                        promotionRequest.endDate()))
-                .toList();
-        promotions.forEach(promotionRepository::save);
-
-        List<Product> products = productRequests.stream()
-                .filter(productRequest -> !productRepository.existByProductName(productRequest.productName()))
-                .map(productRequest -> new Product(productRequest.productName(), productRequest.productPrice()))
-                .toList();
-        products.forEach(productRepository::save);
-
         StoreInventory storeInventory = new StoreInventory();
 
         for (ProductRequest productRequest : productRequests) {
             Product product = productRepository.findByProductName(productRequest.productName());
             Promotion promotion = null;
-            if (Objects.nonNull(productRequest.promotionType())) {
+            if (Objects.nonNull(productRequest.promotionName())) {
                 promotion = promotionRepository.findPromotion(productRequest.promotionName())
-                        .orElseThrow(() -> new PromotionNotExistException(productRequest.promotionType()));
+                        .orElseThrow(() -> new PromotionNotExistException(productRequest.promotionName()));
             }
             if (!storeInventory.existsByProduct(product)) {
                 ProductInventory productInventory = new ProductInventory(product, promotion);
@@ -55,7 +39,7 @@ public class StoreInventoryService {
 
             ProductInventory productInventory = storeInventory.getProductInventory(product);
 
-            if (productRequest.promotionType() == null) {
+            if (Objects.isNull(productRequest.promotionName())) {
                 productInventory.updateStockQuantity(productRequest.stockQuantity());
             } else {
                 productInventory.updatePromotionStockQuantity(productRequest.stockQuantity());

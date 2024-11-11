@@ -21,7 +21,7 @@ class ReceiptServiceTest {
     void makeReceipt() {
         Product cola = new Product("콜라", 1000);
         Promotion promotion = new Promotion(
-                PromotionType.BUY_N_GET_ONE_FREE,"탄산2+1", 2, 1, LocalDate.of(2024, 11, 9), LocalDate.of(2024, 11, 15));
+                "탄산2+1", 2, 1, LocalDate.of(2024, 11, 9), LocalDate.of(2024, 11, 15));
         ProductInventory colaInventory = new ProductInventory(cola, promotion, 10, 10);
 
         Product energyBar = new Product("에너지바", 2000);

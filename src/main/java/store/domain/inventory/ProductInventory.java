@@ -4,7 +4,6 @@ import java.util.Objects;
 import store.common.exception.InvalidPurchaseQuantityException;
 import store.domain.product.Product;
 import store.domain.promotion.Promotion;
-import camp.nextstep.edu.missionutils.DateTimes;
 
 public class ProductInventory {
     private final Product product;
@@ -43,7 +42,7 @@ public class ProductInventory {
     }
 
     public void purchase(int purchaseQuantity) {
-        if(this.promotion == null || !this.promotion.isApplicable(DateTimes.now())) {
+        if(this.promotion == null || !this.promotion.isPromotionAvailable()) {
             stockQuantity -= purchaseQuantity;
             totalStockQuantity -= purchaseQuantity;
             return;
@@ -61,7 +60,7 @@ public class ProductInventory {
     }
 
     public int recommendAdditionalPurchase(int purchaseQuantity) {
-        if (this.promotion == null || !promotion.isApplicable(DateTimes.now())) {
+        if (this.promotion == null || !promotion.isPromotionAvailable()) {
             return 0;
         }
         if (purchaseQuantity >= promotionStockQuantity) {
@@ -74,7 +73,7 @@ public class ProductInventory {
     }
 
     public int getPromotionNonApplicablePurchaseQuantity(int purchaseQuantity) {
-        if (this.promotion == null || !promotion.isApplicable(DateTimes.now())) {
+        if (this.promotion == null || !promotion.isPromotionAvailable()) {
             return 0;
         }
         if (purchaseQuantity < this.promotionStockQuantity) {
@@ -84,7 +83,7 @@ public class ProductInventory {
     }
 
     public int getPromotionGiveawayCount(int purchaseQuantity) {
-        if (this.promotion == null || !promotion.isApplicable(DateTimes.now())) {
+        if (this.promotion == null || !promotion.isPromotionAvailable()) {
             return 0;
         }
         return (Math.min(promotionStockQuantity, purchaseQuantity) / (this.promotion.getBuy() + this.promotion.getGet())) * this.promotion.getGet();
@@ -111,7 +110,7 @@ public class ProductInventory {
     }
 
     private int getPromotionApplicablePurchaseQuantity(int purchaseQuantity) {
-        if (this.promotion == null || !promotion.isApplicable(DateTimes.now())) {
+        if (this.promotion == null || !promotion.isPromotionAvailable()) {
             return 0;
         }
         return (Math.min(this.promotionStockQuantity, purchaseQuantity)  / (this.promotion.getBuy() + this.promotion.getGet())) * (this.promotion.getBuy() + this.promotion.getGet());
