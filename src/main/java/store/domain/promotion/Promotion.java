@@ -21,8 +21,8 @@ public class Promotion {
     }
 
     public boolean isPromotionAvailable() {
-        LocalDateTime now = DateTimes.now();
-        return now.isAfter(startDate.atStartOfDay()) && now.isBefore(endDate.atTime(23, 59, 59, 59));
+        LocalDate now = LocalDate.from(DateTimes.now());
+        return now.isAfter(startDate) && now.isBefore(endDate);
     }
 
     public String getName() {
