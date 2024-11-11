@@ -17,9 +17,8 @@ public class InputHandler {
         List<ProductRequest> productsRequest = new ArrayList<>();
         try {
             BufferedReader br = new BufferedReader(new FileReader("src/main/resources/products.md"));
-            while(true) {
-                String line = br.readLine();
-                if(line == null) break;
+            String line;
+            while ((line = br.readLine()) != null) {
                 String[] splitInput = line.split(",");
                 productsRequest.add(ProductRequest.of(splitInput[0], splitInput[1], splitInput[2], splitInput[3]));
             }
@@ -34,9 +33,8 @@ public class InputHandler {
         List<PromotionRequest> promotionsRequest = new ArrayList<>();
         try {
             BufferedReader br = new BufferedReader(new FileReader("src/main/resources/promotions.md"));
-            while (true) {
-                String line = br.readLine();
-                if(line == null) break;
+            String line;
+            while ((line = br.readLine()) != null) {
                 String[] splitInput = line.split(",");
                 promotionsRequest.add(PromotionRequest.of(splitInput[0], splitInput[1], splitInput[2], splitInput[3], splitInput[4]));
             }
