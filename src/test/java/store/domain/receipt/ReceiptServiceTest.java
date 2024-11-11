@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.Map;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import store.domain.inventory.ProductInventory;
@@ -14,6 +15,11 @@ import store.domain.product.Product;
 import store.domain.promotion.Promotion;
 
 class ReceiptServiceTest {
+
+    @AfterEach
+    void resetSystemIn() {
+        System.setIn(System.in);
+    }
 
     @DisplayName("영수증을 발행하는 테스트")
     @Test

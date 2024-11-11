@@ -3,6 +3,7 @@ package store.domain.inventory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -10,6 +11,11 @@ import store.domain.product.Product;
 import store.domain.promotion.Promotion;
 
 class ProductInventoryTest {
+
+    @AfterEach
+    void resetSystemIn() {
+        System.setIn(System.in);
+    }
 
     @DisplayName("2+1 프로모션 적용이 가능한 상품에 대해 고객이 해당 수량만큼 가져오지 않았을 때, 추가로 받을 수 있는 상품 개수를 구한다.")
     @ParameterizedTest

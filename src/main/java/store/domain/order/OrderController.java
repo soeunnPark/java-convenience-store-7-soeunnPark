@@ -78,7 +78,7 @@ public class OrderController {
 
     private Order getOrder(StoreInventory storeInventory) {
         Map<Product, Integer> orders;
-        Order order = null;
+        Order order;
         while(true) {
             try {
                 List<OrderRequest> orderRequests = inputHandler.readOrder();
