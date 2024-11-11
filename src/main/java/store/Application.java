@@ -29,6 +29,6 @@ public class Application {
                 promotionRepository, productInventoryRepository);
         OrderController orderController = new OrderController(inputHandler, outputHandler,
                 receiptService, productInventoryService, productService, promotionService, orderService);
-        orderController.start();
+//        orderController.start();
     }
 }
