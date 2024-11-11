@@ -18,6 +18,8 @@ import store.interfaces.OutputHandler;
 import store.interfaces.ProductInventoryResponse;
 import store.interfaces.ProductRequest;
 import store.interfaces.PromotionNonApplicablePurchase;
+import store.interfaces.PromotionNonApplicablePurchase.Request;
+import store.interfaces.PromotionNonApplicablePurchase.Response;
 import store.interfaces.PromotionRequest;
 import store.interfaces.ReceiptResponse;
 
@@ -27,32 +29,32 @@ public class OrderController {
     private final OutputHandler outputHandler;
 
     private final ProductInventoryService productInventoryService;
-
     private final ReceiptService receiptService;
     private final ProductService productService;
     private final PromotionService promotionService;
-
+    private final OrderService orderService;
 
     public OrderController(InputHandler inputHandler, OutputHandler outputHandler, ReceiptService receiptService,
                            ProductInventoryService productInventoryService, ProductService productService,
-                           PromotionService promotionService) {
+                           PromotionService promotionService, OrderService orderService) {
         this.inputHandler = inputHandler;
         this.receiptService = receiptService;
         this.outputHandler = outputHandler;
         this.productInventoryService = productInventoryService;
         this.productService = productService;
         this.promotionService = promotionService;
+        this.orderService = orderService;
     }
 
     public void start() {
-        List<ProductInventory> productInventoryRepository = makeStore();
+        List<ProductInventory> productInventories = makeStore();
         do {
-            printStore(productInventoryRepository);
-            Order order = getOrder(productInventoryRepository);
-            modifyOrder(order, productInventoryRepository);
+            printStore(productInventories);
+            Order order = getOrder();
+            modifyOrder(order);
             boolean isMembership = askForMembership();
             outputHandler.printNewLine();
-            purchase(isMembership, order, productInventoryRepository);
+            purchase(isMembership, order, productInventories);
         } while (inputHandler.askContinue());
         inputHandler.closeConsole();
     }
@@ -76,10 +78,10 @@ public class OrderController {
         return productInventoryService.createProductInventory(productRequests);
     }
 
-    private Order getOrder(List<ProductInventory> productInventories) {
+    private Order getOrder() {
         Map<Product, Integer> orders;
         Order order;
-        while(true) {
+        while (true) {
             try {
                 List<OrderRequest> orderRequests = inputHandler.readOrder();
                 orders = orderRequests.stream()
@@ -98,29 +100,53 @@ public class OrderController {
         return order;
     }
 
-    private void modifyOrder(Order order, List<ProductInventory> productInventories) {
+    private void modifyOrder(Order order) {
         for (Product product : order.getOrder().keySet()) {
-            ProductInventory productInventory = productInventoryService.findProductInventory(product.getName());
-            int recommendAdditionalPurchaseQuantity = productInventory.recommendAdditionalPurchase(
-                    order.getOrder().get(product));
-            if (recommendAdditionalPurchaseQuantity > 0) {
-                var confirmAdditionalPurchase = inputHandler.askAdditionalPurchaseForPromotion(
-                        AdditionalPurchase.Response.of(product, recommendAdditionalPurchaseQuantity));
-                if (confirmAdditionalPurchase.addGiveaway().equals("Y")) {
-                    order.addPurchaseCount(product, recommendAdditionalPurchaseQuantity);
-                }
-            }
-            int promotionNonApplicablePurchaseQuantity = productInventory.getPromotionNonApplicablePurchaseQuantity(
-                    order.getOrder().get(product));
-            if (promotionNonApplicablePurchaseQuantity > 0) {
-                var confirmExcludeNonPromotion = inputHandler.askExcludeNonPromotion(
-                        PromotionNonApplicablePurchase.Response.of(product, promotionNonApplicablePurchaseQuantity));
-                if (confirmExcludeNonPromotion.excludeNonPromotion().equals("N")) {
-                    order.excludeNonPromotionCount(product, promotionNonApplicablePurchaseQuantity);
-                }
-            }
+            addProductForPromotion(order, product, order.getOrder().get(product));
+            excludeNonPromotionProduct(order, product, order.getOrder().get(product));
         }
-        outputHandler.printNewLine();
+    }
+
+    private void excludeNonPromotionProduct(Order order, Product product, Integer purchaseQuantity) {
+        int promotionNonApplicablePurchaseQuantity = orderService.getPromotionNonApplicablePurchaseQuantity(product,
+                purchaseQuantity);
+        if (promotionNonApplicablePurchaseQuantity > 0) {
+            PromotionNonApplicablePurchase.Request confirmExcludeNonPromotion;
+            while (true) {
+                try {
+                    confirmExcludeNonPromotion = inputHandler.askExcludeNonPromotion(
+                            Response.of(product, promotionNonApplicablePurchaseQuantity));
+                    break;
+                } catch (ConvenienceStoreException e) {
+                    System.out.println(e.getErrorMessageForClient());
+                }
+            }
+            if (confirmExcludeNonPromotion.excludeNonPromotion().equals("N")) {
+                order.excludeNonPromotionCount(product, promotionNonApplicablePurchaseQuantity);
+            }
+            outputHandler.printNewLine();
+        }
+
+    }
+
+    private void addProductForPromotion(Order order, Product product, Integer purchaseQuantity) {
+        int recommendAdditionalPurchaseQuantity = orderService.recommendAdditionalPurchase(product, purchaseQuantity);
+        if (recommendAdditionalPurchaseQuantity > 0) {
+            AdditionalPurchase.Request confirmAdditionalPurchase;
+            while (true) {
+                try {
+                    confirmAdditionalPurchase = inputHandler.askAdditionalPurchaseForPromotion(
+                            AdditionalPurchase.Response.of(product, recommendAdditionalPurchaseQuantity));
+                    break;
+                } catch (ConvenienceStoreException e) {
+                    System.out.println(e.getErrorMessageForClient());
+                }
+            }
+            if (confirmAdditionalPurchase.addGiveaway().equals("Y")) {
+                order.addPurchaseCount(product, recommendAdditionalPurchaseQuantity);
+            }
+            outputHandler.printNewLine();
+        }
     }
 
     private void purchase(boolean isMembership, Order order, List<ProductInventory> productInventories) {

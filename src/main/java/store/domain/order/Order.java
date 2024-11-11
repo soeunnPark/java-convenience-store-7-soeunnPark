@@ -4,6 +4,7 @@ import java.util.Map;
 import store.domain.product.Product;
 
 public class Order {
+
     private final Map<Product, Integer> order;
 
     public Order(Map<Product, Integer> order) {

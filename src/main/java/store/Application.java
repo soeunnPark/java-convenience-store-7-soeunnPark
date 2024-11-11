@@ -3,6 +3,7 @@ package store;
 import store.domain.inventory.ProductInventoryRepository;
 import store.domain.inventory.ProductInventoryService;
 import store.domain.order.OrderController;
+import store.domain.order.OrderService;
 import store.domain.product.ProductRepository;
 import store.domain.product.ProductService;
 import store.domain.promotion.PromotionRepository;
@@ -23,9 +24,10 @@ public class Application {
 
         ProductService productService = new ProductService(productRepository);
         PromotionService promotionService = new PromotionService(promotionRepository);
+        OrderService orderService = new OrderService(productInventoryRepository);
         ProductInventoryService productInventoryService = new ProductInventoryService(productRepository, promotionRepository, productInventoryRepository);
         OrderController orderController = new OrderController(inputHandler, outputHandler,
-                receiptService, productInventoryService, productService, promotionService);
+                receiptService, productInventoryService, productService, promotionService, orderService);
         orderController.start();
     }
 }
