@@ -23,4 +23,8 @@ public class ProductRepository {
         return products.stream().filter(product -> product.getName().equals(productName)).findFirst()
                 .orElseThrow(() -> new ProductNotFoundException(productName));
     }
+
+    public List<Product> findAllProducts() {
+        return products;
+    }
 }

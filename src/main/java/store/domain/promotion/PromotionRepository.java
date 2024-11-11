@@ -3,6 +3,7 @@ package store.domain.promotion;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import store.common.exception.PromotionNotExistException;
 
 public class PromotionRepository {
     private final List<Promotion> promotions;
@@ -15,9 +16,10 @@ public class PromotionRepository {
         this.promotions.add(promotion);
     }
 
-    public Optional<Promotion> findPromotion(String promotionName) {
+    public Promotion findPromotion(String promotionName) {
         return promotions.stream()
                 .filter(promotion -> promotion.getName().equals(promotionName))
-                .findAny();
+                .findAny()
+                .orElseThrow(() -> new PromotionNotExistException(promotionName));
     }
 }

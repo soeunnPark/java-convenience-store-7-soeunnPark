@@ -5,8 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import store.common.exception.ConvenienceStoreException;
 import store.domain.inventory.ProductInventory;
-import store.domain.inventory.StoreInventory;
-import store.domain.inventory.StoreInventoryService;
+import store.domain.inventory.ProductInventoryService;
 import store.domain.product.Product;
 import store.domain.product.ProductService;
 import store.domain.promotion.PromotionService;
@@ -27,38 +26,39 @@ public class OrderController {
     private final InputHandler inputHandler;
     private final OutputHandler outputHandler;
 
-    private final StoreInventoryService storeInventoryService;
+    private final ProductInventoryService productInventoryService;
+
     private final ReceiptService receiptService;
     private final ProductService productService;
     private final PromotionService promotionService;
 
 
     public OrderController(InputHandler inputHandler, OutputHandler outputHandler, ReceiptService receiptService,
-                           StoreInventoryService storeInventoryService, ProductService productService,
+                           ProductInventoryService productInventoryService, ProductService productService,
                            PromotionService promotionService) {
         this.inputHandler = inputHandler;
         this.receiptService = receiptService;
         this.outputHandler = outputHandler;
-        this.storeInventoryService = storeInventoryService;
+        this.productInventoryService = productInventoryService;
         this.productService = productService;
         this.promotionService = promotionService;
     }
 
     public void start() {
-        StoreInventory storeInventory = makeStore();
+        List<ProductInventory> productInventoryRepository = makeStore();
         do {
-            printStore(storeInventory);
-            Order order = getOrder(storeInventory);
-            modifyOrder(order, storeInventory);
+            printStore(productInventoryRepository);
+            Order order = getOrder(productInventoryRepository);
+            modifyOrder(order, productInventoryRepository);
             boolean isMembership = askForMembership();
             outputHandler.printNewLine();
-            purchase(isMembership, order, storeInventory);
+            purchase(isMembership, order, productInventoryRepository);
         } while (inputHandler.askContinue());
         inputHandler.closeConsole();
     }
 
-    private void printStore(StoreInventory storeInventory) {
-        List<ProductInventoryResponse> productsInventoryResponse = storeInventory.getStoreInventory().stream()
+    private void printStore(List<ProductInventory> productInventories) {
+        List<ProductInventoryResponse> productsInventoryResponse = productInventories.stream()
                 .map(ProductInventoryResponse::of)
                 .toList();
         outputHandler.printStoreInventory(productsInventoryResponse);
@@ -68,15 +68,15 @@ public class OrderController {
         return inputHandler.readMembership().equals("Y");
     }
 
-    private StoreInventory makeStore() {
+    private List<ProductInventory> makeStore() {
         List<ProductRequest> productRequests = inputHandler.readProducts();
         List<PromotionRequest> promotionRequests = inputHandler.readPromotions();
         productService.createProducts(productRequests);
         promotionService.createPromotion(promotionRequests);
-        return storeInventoryService.makeStoreInventory(productRequests, promotionRequests);
+        return productInventoryService.createProductInventory(productRequests);
     }
 
-    private Order getOrder(StoreInventory storeInventory) {
+    private Order getOrder(List<ProductInventory> productInventories) {
         Map<Product, Integer> orders;
         Order order;
         while(true) {
@@ -88,7 +88,7 @@ public class OrderController {
                                 OrderRequest::purchaseQuantity
                         ));
                 order = new Order(orders);
-                storeInventoryService.validateStoreInventory(order, storeInventory);
+                productInventoryService.validateStoreInventory(order);
                 break;
             } catch (ConvenienceStoreException e) {
                 System.out.println(e.getErrorMessageForClient());
@@ -98,10 +98,9 @@ public class OrderController {
         return order;
     }
 
-    private void modifyOrder(Order order, StoreInventory storeInventory) {
-
+    private void modifyOrder(Order order, List<ProductInventory> productInventories) {
         for (Product product : order.getOrder().keySet()) {
-            ProductInventory productInventory = storeInventory.getProductInventory(product);
+            ProductInventory productInventory = productInventoryService.findProductInventory(product.getName());
             int recommendAdditionalPurchaseQuantity = productInventory.recommendAdditionalPurchase(
                     order.getOrder().get(product));
             if (recommendAdditionalPurchaseQuantity > 0) {
@@ -124,10 +123,10 @@ public class OrderController {
         outputHandler.printNewLine();
     }
 
-    private void purchase(boolean isMembership, Order order, StoreInventory storeInventory) {
-        Receipt receipt = receiptService.makeReceipt(isMembership, order, storeInventory);
+    private void purchase(boolean isMembership, Order order, List<ProductInventory> productInventories) {
+        Receipt receipt = receiptService.makeReceipt(isMembership, order, productInventories);
         for (Product product : order.getOrder().keySet()) {
-            ProductInventory productInventory = storeInventory.getProductInventory(product);
+            ProductInventory productInventory = productInventoryService.findProductInventory(product.getName());
             productInventory.purchase(order.getOrder().get(product));
         }
         outputHandler.printReceipt(ReceiptResponse.from(order, receipt));

@@ -1,7 +1,7 @@
 package store;
 
-import java.io.IOException;
-import store.domain.inventory.StoreInventoryService;
+import store.domain.inventory.ProductInventoryRepository;
+import store.domain.inventory.ProductInventoryService;
 import store.domain.order.OrderController;
 import store.domain.product.ProductRepository;
 import store.domain.product.ProductService;
@@ -16,15 +16,16 @@ public class Application {
 
         InputHandler inputHandler = new InputHandler();
         OutputHandler outputHandler = new OutputHandler();
-        ReceiptService receiptService= new ReceiptService();
+        ProductInventoryRepository productInventoryRepository = new ProductInventoryRepository();
+        ReceiptService receiptService= new ReceiptService(productInventoryRepository);
         ProductRepository productRepository = new ProductRepository();
         PromotionRepository promotionRepository = new PromotionRepository();
 
         ProductService productService = new ProductService(productRepository);
         PromotionService promotionService = new PromotionService(promotionRepository);
-        StoreInventoryService storeInventoryService = new StoreInventoryService(productRepository, promotionRepository);
+        ProductInventoryService productInventoryService = new ProductInventoryService(productRepository, promotionRepository, productInventoryRepository);
         OrderController orderController = new OrderController(inputHandler, outputHandler,
-                receiptService, storeInventoryService, productService, promotionService);
+                receiptService, productInventoryService, productService, promotionService);
         orderController.start();
     }
 }

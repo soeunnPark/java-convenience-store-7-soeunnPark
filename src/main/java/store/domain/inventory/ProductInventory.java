@@ -7,10 +7,18 @@ import store.domain.promotion.Promotion;
 
 public class ProductInventory {
     private final Product product;
-    private final Promotion promotion;
+    private Promotion promotion;
     private int stockQuantity;
     private int promotionStockQuantity;
     private int totalStockQuantity;
+
+    public ProductInventory(Product product) {
+        this.product = product;
+        this.promotion = null;
+        this.stockQuantity = 0;
+        this.promotionStockQuantity = 0;
+        this.totalStockQuantity = 0;
+    }
 
     public ProductInventory(Product product, Promotion promotion) {
         this.product = product;
@@ -18,6 +26,10 @@ public class ProductInventory {
         this.stockQuantity = 0;
         this.promotionStockQuantity = 0;
         this.totalStockQuantity = 0;
+    }
+
+    public void addPromotion(Promotion promotion) {
+        this.promotion = promotion;
     }
 
     public void updateStockQuantity(int stockQuantity) {

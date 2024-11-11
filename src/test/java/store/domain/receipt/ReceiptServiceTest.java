@@ -9,7 +9,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import store.domain.inventory.ProductInventory;
-import store.domain.inventory.StoreInventory;
+import store.domain.inventory.ProductInventoryRepository;
 import store.domain.order.Order;
 import store.domain.product.Product;
 import store.domain.promotion.Promotion;
@@ -34,13 +34,13 @@ class ReceiptServiceTest {
         ProductInventory energyBarInventory = new ProductInventory(energyBar, null);
         energyBarInventory.updateStockQuantity(5);
         energyBarInventory.updatePromotionStockQuantity(0);
-        StoreInventory storeInventory = new StoreInventory();
-        storeInventory.addProductInventory(colaInventory);
-        storeInventory.addProductInventory(energyBarInventory);
+        ProductInventoryRepository productInventoryRepository = new ProductInventoryRepository();
+        productInventoryRepository.saveProductInventory(colaInventory);
+        productInventoryRepository.saveProductInventory(energyBarInventory);
         Order order = new Order(Map.of(cola,3, energyBar, 5));
 
-        ReceiptService receiptService = new ReceiptService();
-        Receipt receipt = receiptService.makeReceipt(true, order, storeInventory);
+        ReceiptService receiptService = new ReceiptService(productInventoryRepository);
+        Receipt receipt = receiptService.makeReceipt(true, order, productInventoryRepository.findAllProductInventory());
 
         assertAll(
                 () -> assertThat(receipt.getTotalPurchaseAmount()).isEqualTo(13000),
