@@ -2,6 +2,7 @@ package store.domain.order;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import store.common.exception.ConvenienceStoreException;
 import store.domain.inventory.ProductInventory;
@@ -55,26 +56,6 @@ public class OrderController {
         inputHandler.closeConsole();
     }
 
-    private void printStore(List<ProductInventory> productInventories) {
-        List<ProductInventoryResponse> productsInventoryResponse = productInventories.stream()
-                .map(ProductInventoryResponse::of)
-                .toList();
-        outputHandler.printStoreInventory(productsInventoryResponse);
-    }
-
-    private boolean askForMembership() {
-        boolean isMembership;
-        while(true) {
-            try {
-                isMembership = inputHandler.readMembership();
-                outputHandler.printNewLine();
-                return isMembership;
-            } catch (ConvenienceStoreException e) {
-                System.out.println(e.getErrorMessageForClient());
-            }
-        }
-    }
-
     private List<ProductInventory> makeStore() {
         List<ProductRequest> productRequests = inputHandler.readProducts();
         List<PromotionRequest> promotionRequests = inputHandler.readPromotions();
@@ -113,18 +94,15 @@ public class OrderController {
     }
 
     private void excludeNonPromotionProduct(Order order, Product product, Integer purchaseQuantity) {
-        int promotionNonApplicablePurchaseQuantity = orderService.getPromotionNonApplicablePurchaseQuantity(product, purchaseQuantity);
+        int promotionNonApplicablePurchaseQuantity = orderService.getPromotionNonApplicablePurchaseQuantity(product,
+                purchaseQuantity);
         if (promotionNonApplicablePurchaseQuantity > 0) {
-            while (true) {
-                try {
-                    if(!inputHandler.askExcludeNonPromotion(PromotionNonApplicablePurchaseResponse.of(product, promotionNonApplicablePurchaseQuantity))) {
-                        order.excludeNonPromotionCount(product, promotionNonApplicablePurchaseQuantity);
-                    }
-                    break;
-                } catch (ConvenienceStoreException e) {
-                    System.out.println(e.getErrorMessageForClient());
+            retryOnException(() -> {
+                if (!inputHandler.askExcludeNonPromotion(PromotionNonApplicablePurchaseResponse.of(product,
+                        promotionNonApplicablePurchaseQuantity))) {
+                    order.excludeNonPromotionCount(product, promotionNonApplicablePurchaseQuantity);
                 }
-            }
+            });
             outputHandler.printNewLine();
         }
     }
@@ -132,29 +110,48 @@ public class OrderController {
     private void addProductForPromotion(Order order, Product product, Integer purchaseQuantity) {
         int recommendAdditionalPurchaseQuantity = orderService.recommendAdditionalPurchase(product, purchaseQuantity);
         if (recommendAdditionalPurchaseQuantity > 0) {
-            while (true) {
-                try {
-                    if(inputHandler.askAdditionalPurchaseForPromotion(
-                            AdditionalPurchaseResponse.of(product, recommendAdditionalPurchaseQuantity))) {
-                        order.addPurchaseCount(product, recommendAdditionalPurchaseQuantity);
-                    }
-                    break;
-                } catch (ConvenienceStoreException e) {
-                    System.out.println(e.getErrorMessageForClient());
+            retryOnException(() -> {
+                if (inputHandler.askAdditionalPurchaseForPromotion(
+                        AdditionalPurchaseResponse.of(product, recommendAdditionalPurchaseQuantity))) {
+                    order.addPurchaseCount(product, recommendAdditionalPurchaseQuantity);
                 }
-            }
+            });
             outputHandler.printNewLine();
         }
+    }
+
+    private void printStore(List<ProductInventory> productInventories) {
+        List<ProductInventoryResponse> productsInventoryResponse = productInventories.stream()
+                .map(ProductInventoryResponse::of)
+                .toList();
+        outputHandler.printStoreInventory(productsInventoryResponse);
     }
 
     private void purchase(Order order) {
         boolean isMembership = askForMembership();
         Receipt receipt = receiptService.makeReceipt(isMembership, order);
-        for (Product product : order.getOrder().keySet()) {
-            ProductInventory productInventory = productInventoryService.findProductInventory(product.getName());
-            productInventory.purchase(order.getOrder().get(product));
-        }
+        productInventoryService.updateStock(order);
         outputHandler.printReceipt(ReceiptResponse.from(order, receipt));
         outputHandler.printNewLine();
+    }
+
+    private boolean askForMembership() {
+        AtomicBoolean isMembership = new AtomicBoolean(false);
+        retryOnException(() -> {
+            isMembership.set(inputHandler.readMembership());
+            outputHandler.printNewLine();
+        });
+        return isMembership.get();
+    }
+
+    private void retryOnException(Runnable action) {
+        while (true) {
+            try {
+                action.run();
+                break;
+            } catch (ConvenienceStoreException e) {
+                System.out.println(e.getErrorMessageForClient());
+            }
+        }
     }
 }

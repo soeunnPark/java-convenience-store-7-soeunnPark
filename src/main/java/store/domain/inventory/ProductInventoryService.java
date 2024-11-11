@@ -38,10 +38,6 @@ public class ProductInventoryService {
         return productInventoryRepository.findAllProductInventory();
     }
 
-    public ProductInventory findProductInventory(String productName) {
-        return productInventoryRepository.findProductInventory(productName);
-    }
-
     public void validateStoreInventory(Order order) {
         for(Product product : order.getOrder().keySet()) {
             ProductInventory productInventory = productInventoryRepository.findProductInventory(product.getName());
@@ -53,5 +49,12 @@ public class ProductInventoryService {
         productRepository.findAllProducts().stream()
                 .map(ProductInventory::new)
                 .forEach(productInventoryRepository::saveProductInventory);
+    }
+
+    public void updateStock(Order order) {
+        for (Product product : order.getOrder().keySet()) {
+            ProductInventory productInventory = productInventoryRepository.findProductInventory(product.getName());
+            productInventory.purchase(order.getOrder().get(product));
+        }
     }
 }
