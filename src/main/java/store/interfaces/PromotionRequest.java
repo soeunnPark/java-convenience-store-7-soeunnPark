@@ -11,7 +11,8 @@ public record PromotionRequest(
         LocalDate endDate
 ) {
     public static PromotionRequest of(String name, String buy, String get, String startDate, String endDate) {
-        return new PromotionRequest(name, Integer.parseInt(buy), Integer.parseInt(get), LocalDate.parse(startDate), LocalDate.parse(endDate));
+        return new PromotionRequest(name, Integer.parseInt(buy), Integer.parseInt(get), LocalDate.parse(startDate),
+                LocalDate.parse(endDate));
     }
 
     public Promotion toPromotion() {

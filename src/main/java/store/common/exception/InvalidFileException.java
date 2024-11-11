@@ -1,6 +1,6 @@
 package store.common.exception;
 
-public class InvalidFileException extends ConvenienceStoreException{
+public class InvalidFileException extends ConvenienceStoreException {
     public InvalidFileException(String fileName) {
         super(ErrorMessage.INVALID_FILE_NAME, "(파일 이름: " + fileName + ")");
     }

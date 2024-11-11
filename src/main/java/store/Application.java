@@ -13,19 +13,20 @@ import store.interfaces.InputHandler;
 import store.interfaces.OutputHandler;
 
 public class Application {
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
 
         InputHandler inputHandler = new InputHandler();
         OutputHandler outputHandler = new OutputHandler();
         ProductInventoryRepository productInventoryRepository = new ProductInventoryRepository();
-        ReceiptService receiptService= new ReceiptService(productInventoryRepository);
+        ReceiptService receiptService = new ReceiptService(productInventoryRepository);
         ProductRepository productRepository = new ProductRepository();
         PromotionRepository promotionRepository = new PromotionRepository();
 
         ProductService productService = new ProductService(productRepository);
         PromotionService promotionService = new PromotionService(promotionRepository);
         OrderService orderService = new OrderService(productInventoryRepository, productRepository);
-        ProductInventoryService productInventoryService = new ProductInventoryService(productRepository, promotionRepository, productInventoryRepository);
+        ProductInventoryService productInventoryService = new ProductInventoryService(productRepository,
+                promotionRepository, productInventoryRepository);
         OrderController orderController = new OrderController(inputHandler, outputHandler,
                 receiptService, productInventoryService, productService, promotionService, orderService);
         orderController.start();

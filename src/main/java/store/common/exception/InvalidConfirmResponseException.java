@@ -1,6 +1,6 @@
 package store.common.exception;
 
-public class InvalidConfirmResponseException extends ConvenienceStoreException{
+public class InvalidConfirmResponseException extends ConvenienceStoreException {
 
     public InvalidConfirmResponseException(String input) {
         super(ErrorMessage.INVALID_CONFIRM_RESPONSE, "(입력값: " + input + ")");

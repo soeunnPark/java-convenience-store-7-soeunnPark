@@ -1,7 +1,6 @@
 package store.domain.receipt;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import store.domain.inventory.ProductInventory;
 import store.domain.inventory.ProductInventoryRepository;
@@ -19,7 +18,7 @@ public class ReceiptService {
     public Receipt makeReceipt(boolean isMembership, Order order) {
         Map<Product, Integer> promotionGiveaway = getPromotionGiveaway(order);
         int membershipDiscount = 0;
-        if(isMembership) {
+        if (isMembership) {
             membershipDiscount = calculateMembershipDiscount(order);
         }
         return new Receipt(order, promotionGiveaway, membershipDiscount);

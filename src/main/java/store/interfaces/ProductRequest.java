@@ -22,7 +22,7 @@ public record ProductRequest(
         } catch (NumberFormatException e) {
             throw new InvalidStockQuantityException(price, e);
         }
-        if(promotion.equals("null")) {
+        if (promotion.equals("null")) {
             return new ProductRequest(name, productPrice, stockQuantity, null);
         }
         return new ProductRequest(name, productPrice, stockQuantity, promotion);

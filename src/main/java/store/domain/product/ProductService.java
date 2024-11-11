@@ -17,8 +17,4 @@ public class ProductService {
                 .map(productRequest -> new Product(productRequest.productName(), productRequest.productPrice()))
                 .forEach(productRepository::save);
     }
-
-    public Product findProduct(String productName) {
-        return productRepository.findProduct(productName);
-    }
 }

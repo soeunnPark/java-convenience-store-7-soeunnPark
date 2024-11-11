@@ -39,7 +39,7 @@ public class ProductInventoryService {
     }
 
     public void validateStoreInventory(Order order) {
-        for(Product product : order.getOrder().keySet()) {
+        for (Product product : order.getOrder().keySet()) {
             ProductInventory productInventory = productInventoryRepository.findProductInventory(product.getName());
             productInventory.validateStockAvailable(order.getOrder().get(product));
         }

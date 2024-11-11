@@ -43,8 +43,8 @@ public class ProductInventory {
     }
 
     public void validateStockAvailable(int purchaseQuantity) {
-        if(promotion != null && !promotion.isPromotionAvailable()) {
-            if(stockQuantity < purchaseQuantity) {
+        if (promotion != null && !promotion.isPromotionAvailable()) {
+            if (stockQuantity < purchaseQuantity) {
                 throw new InvalidPurchaseQuantityException(this.product, this.stockQuantity, purchaseQuantity);
             }
             return;
@@ -55,7 +55,7 @@ public class ProductInventory {
     }
 
     public void purchase(int purchaseQuantity) {
-        if(this.promotion == null || !this.promotion.isPromotionAvailable()) {
+        if (this.promotion == null || !this.promotion.isPromotionAvailable()) {
             stockQuantity -= purchaseQuantity;
             totalStockQuantity -= purchaseQuantity;
             return;
@@ -99,7 +99,8 @@ public class ProductInventory {
         if (this.promotion == null || !promotion.isPromotionAvailable()) {
             return 0;
         }
-        return (Math.min(promotionStockQuantity, purchaseQuantity) / (this.promotion.getBuy() + this.promotion.getGet())) * this.promotion.getGet();
+        return (Math.min(promotionStockQuantity, purchaseQuantity) / (this.promotion.getBuy()
+                + this.promotion.getGet())) * this.promotion.getGet();
     }
 
     public Promotion getPromotion() {
@@ -126,6 +127,7 @@ public class ProductInventory {
         if (this.promotion == null || !promotion.isPromotionAvailable()) {
             return 0;
         }
-        return (Math.min(this.promotionStockQuantity, purchaseQuantity)  / (this.promotion.getBuy() + this.promotion.getGet())) * (this.promotion.getBuy() + this.promotion.getGet());
+        return (Math.min(this.promotionStockQuantity, purchaseQuantity) / (this.promotion.getBuy()
+                + this.promotion.getGet())) * (this.promotion.getBuy() + this.promotion.getGet());
     }
 }

@@ -30,7 +30,7 @@ public class Receipt {
 
     private int calculateTotalPurchaseCount() {
         int sum = 0;
-        for(int i : this.order.getOrder().values()) {
+        for (int i : this.order.getOrder().values()) {
             sum += i;
         }
         return sum;

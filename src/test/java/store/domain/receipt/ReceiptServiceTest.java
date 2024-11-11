@@ -1,7 +1,7 @@
 package store.domain.receipt;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -37,7 +37,7 @@ class ReceiptServiceTest {
         ProductInventoryRepository productInventoryRepository = new ProductInventoryRepository();
         productInventoryRepository.saveProductInventory(colaInventory);
         productInventoryRepository.saveProductInventory(energyBarInventory);
-        Order order = new Order(Map.of(cola,3, energyBar, 5));
+        Order order = new Order(Map.of(cola, 3, energyBar, 5));
 
         ReceiptService receiptService = new ReceiptService(productInventoryRepository);
         Receipt receipt = receiptService.makeReceipt(true, order);

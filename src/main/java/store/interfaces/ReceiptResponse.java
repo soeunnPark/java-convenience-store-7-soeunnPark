@@ -51,7 +51,7 @@ public record ReceiptResponse(
     ) {
         public static List<PromotionGiveawayResponse> from(Map<Product, Integer> promotionGiveaway) {
             List<PromotionGiveawayResponse> promotionGiveawayResponse = new ArrayList<>();
-            for(Product product : promotionGiveaway.keySet()) {
+            for (Product product : promotionGiveaway.keySet()) {
                 promotionGiveawayResponse.add(new PromotionGiveawayResponse(
                         product.getName(),
                         promotionGiveaway.get(product)

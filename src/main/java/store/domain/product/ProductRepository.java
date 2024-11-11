@@ -5,6 +5,7 @@ import java.util.List;
 import store.common.exception.ProductNotFoundException;
 
 public class ProductRepository {
+
     private final List<Product> products;
 
     public ProductRepository() {
