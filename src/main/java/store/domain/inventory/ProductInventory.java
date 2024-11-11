@@ -43,7 +43,7 @@ public class ProductInventory {
     }
 
     public void purchase(int purchaseQuantity) {
-        if(this.promotion == null) {
+        if(this.promotion == null || !this.promotion.isApplicable(DateTimes.now())) {
             stockQuantity -= purchaseQuantity;
             totalStockQuantity -= purchaseQuantity;
             return;
