@@ -24,7 +24,7 @@ public class Application {
 
         ProductService productService = new ProductService(productRepository);
         PromotionService promotionService = new PromotionService(promotionRepository);
-        OrderService orderService = new OrderService(productInventoryRepository);
+        OrderService orderService = new OrderService(productInventoryRepository, productRepository);
         ProductInventoryService productInventoryService = new ProductInventoryService(productRepository, promotionRepository, productInventoryRepository);
         OrderController orderController = new OrderController(inputHandler, outputHandler,
                 receiptService, productInventoryService, productService, promotionService, orderService);

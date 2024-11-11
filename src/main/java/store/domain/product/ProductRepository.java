@@ -19,7 +19,7 @@ public class ProductRepository {
         return this.products.stream().anyMatch(product -> product.getName().equals(productName));
     }
 
-    public Product findByProductName(String productName) {
+    public Product findProduct(String productName) {
         return products.stream().filter(product -> product.getName().equals(productName)).findFirst()
                 .orElseThrow(() -> new ProductNotFoundException(productName));
     }

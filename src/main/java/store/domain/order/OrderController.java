@@ -3,6 +3,7 @@ package store.domain.order;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import store.common.exception.ConvenienceStoreException;
 import store.domain.inventory.ProductInventory;
@@ -65,25 +66,14 @@ public class OrderController {
     }
 
     private Order getOrder() {
-        Map<Product, Integer> orders;
-        Order order;
-        while (true) {
-            try {
-                List<OrderRequest> orderRequests = inputHandler.readOrder();
-                orders = orderRequests.stream()
-                        .collect(Collectors.toMap(
-                                orderRequest -> productService.findProduct(orderRequest.productName()),
-                                OrderRequest::purchaseQuantity
-                        ));
-                order = new Order(orders);
-                productInventoryService.validateStoreInventory(order);
-                break;
-            } catch (ConvenienceStoreException e) {
-                System.out.println(e.getErrorMessageForClient());
-            }
-        }
+        AtomicReference<Order> order = new AtomicReference<>();
+        retryOnException(() -> {
+            List<OrderRequest> orderRequests = inputHandler.readOrder();
+            order.set(orderService.createOrder(orderRequests));
+            productInventoryService.validateStoreInventory(order.get());
+        });
         outputHandler.printNewLine();
-        return order;
+        return order.get();
     }
 
     private void modifyOrder(Order order) {
