@@ -1,4 +1,4 @@
-package store.domain.order;
+package store.interfaces.order;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -6,14 +6,14 @@ import java.util.concurrent.atomic.AtomicReference;
 import store.common.exception.ConvenienceStoreException;
 import store.domain.inventory.ProductInventory;
 import store.domain.inventory.ProductInventoryService;
+import store.domain.order.Order;
+import store.domain.order.OrderService;
 import store.domain.product.Product;
 import store.domain.product.ProductService;
 import store.domain.promotion.PromotionService;
 import store.domain.receipt.Receipt;
 import store.domain.receipt.ReceiptService;
-import store.interfaces.order.AdditionalPurchaseResponse;
-import store.interfaces.input.InputHandler;
-import store.interfaces.order.OrderRequest;
+import store.InputHandler;
 import store.interfaces.output.OutputHandler;
 import store.interfaces.product.ProductInventoryResponse;
 import store.interfaces.product.ProductRequest;

@@ -2,14 +2,13 @@ package store;
 
 import store.domain.inventory.ProductInventoryRepository;
 import store.domain.inventory.ProductInventoryService;
-import store.domain.order.OrderController;
+import store.interfaces.order.OrderController;
 import store.domain.order.OrderService;
 import store.domain.product.ProductRepository;
 import store.domain.product.ProductService;
 import store.domain.promotion.PromotionRepository;
 import store.domain.promotion.PromotionService;
 import store.domain.receipt.ReceiptService;
-import store.interfaces.input.InputHandler;
 import store.interfaces.output.OutputHandler;
 
 public class Application {

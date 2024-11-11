@@ -1,4 +1,4 @@
-package store.interfaces.input;
+package store;
 
 import camp.nextstep.edu.missionutils.Console;
 import java.io.BufferedReader;
@@ -18,13 +18,17 @@ import store.interfaces.order.OrderRequest;
 
 public class InputHandler {
 
+    static final String PRODUCTS_PATH = "src/main/resources/products.md";
+    static final String PROMOTIONS_PATH = "src/main/resources/promotions.md";
+    static final String DELIMITER = ",";
+
     public List<ProductRequest> readProducts() {
         List<ProductRequest> productsRequest = new ArrayList<>();
         try {
-            BufferedReader br = new BufferedReader(new FileReader("src/main/resources/products.md"));
+            BufferedReader br = new BufferedReader(new FileReader(PRODUCTS_PATH));
             String line;
             while ((line = br.readLine()) != null) {
-                String[] splitInput = line.split(",");
+                String[] splitInput = line.split(DELIMITER);
                 productsRequest.add(ProductRequest.of(splitInput[0].trim(), splitInput[1].trim(), splitInput[2].trim(), splitInput[3].trim()));
             }
             br.close();
@@ -37,10 +41,10 @@ public class InputHandler {
     public List<PromotionRequest> readPromotions() {
         List<PromotionRequest> promotionsRequest = new ArrayList<>();
         try {
-            BufferedReader br = new BufferedReader(new FileReader("src/main/resources/promotions.md"));
+            BufferedReader br = new BufferedReader(new FileReader(PROMOTIONS_PATH));
             String line;
             while ((line = br.readLine()) != null) {
-                String[] splitInput = line.split(",");
+                String[] splitInput = line.split(DELIMITER);
                 promotionsRequest.add(
                         PromotionRequest.of(splitInput[0].trim(), splitInput[1].trim(), splitInput[2].trim(), splitInput[3].trim(), splitInput[4].trim()));
             }
