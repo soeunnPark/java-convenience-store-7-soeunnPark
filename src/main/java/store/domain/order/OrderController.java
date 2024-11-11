@@ -47,6 +47,7 @@ public class OrderController {
             Order order = getOrder(storeInventory);
             modifyOrder(order, storeInventory);
             boolean isMembership = askForMembership();
+            outputHandler.printNewLine();
             purchase(isMembership, order, storeInventory);
         } while (inputHandler.askContinue());
     }
@@ -72,8 +73,7 @@ public class OrderController {
     private Order getOrder(StoreInventory storeInventory) {
         Map<Product, Integer> orders;
         Order order = null;
-        int attempts = 5;
-        while(attempts > 0) {
+        while(true) {
             try {
                 List<OrderRequest> orderRequests = inputHandler.readOrder();
                 orders = orderRequests.stream()
@@ -86,11 +86,9 @@ public class OrderController {
                 break;
             } catch (ConvenienceStoreException e) {
                 System.out.println(e.getErrorMessageForClient());
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
             }
-            attempts --;
         }
+        outputHandler.printNewLine();
         return order;
     }
 
@@ -117,6 +115,7 @@ public class OrderController {
                 }
             }
         }
+        outputHandler.printNewLine();
     }
 
     private void purchase(boolean isMembership, Order order, StoreInventory storeInventory) {
@@ -126,5 +125,6 @@ public class OrderController {
             productInventory.purchase(order.getOrder().get(product));
         }
         outputHandler.printReceipt(ReceiptResponse.from(order, receipt));
+        outputHandler.printNewLine();
     }
 }
