@@ -42,6 +42,6 @@ public class ReceiptService {
             }
             purchaseAmountForMembershipDiscount += order.getOrder().get(product) * product.getPrice();
         }
-        return (int) (purchaseAmountForMembershipDiscount * 0.3);
+        return Math.min(8000, (int) (purchaseAmountForMembershipDiscount * 0.3));
     }
 }
