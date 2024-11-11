@@ -1,4 +1,4 @@
-package store.interfaces;
+package store.interfaces.product;
 
 import store.common.exception.InvalidProductPriceException;
 import store.common.exception.InvalidStockQuantityException;

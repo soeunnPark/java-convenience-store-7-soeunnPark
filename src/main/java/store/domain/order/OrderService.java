@@ -7,7 +7,7 @@ import store.domain.inventory.ProductInventory;
 import store.domain.inventory.ProductInventoryRepository;
 import store.domain.product.Product;
 import store.domain.product.ProductRepository;
-import store.interfaces.OrderRequest;
+import store.interfaces.order.OrderRequest;
 
 public class OrderService {
 

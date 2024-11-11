@@ -1,7 +1,7 @@
 package store.domain.promotion;
 
 import java.util.List;
-import store.interfaces.PromotionRequest;
+import store.interfaces.promotion.PromotionRequest;
 
 public class PromotionService {
 

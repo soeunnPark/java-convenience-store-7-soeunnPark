@@ -1,4 +1,4 @@
-package store.interfaces;
+package store.interfaces.input;
 
 import camp.nextstep.edu.missionutils.Console;
 import java.io.BufferedReader;
@@ -10,6 +10,11 @@ import store.common.exception.ConvenienceStoreException;
 import store.common.exception.InvalidConfirmResponseException;
 import store.common.exception.InvalidFileException;
 import store.common.exception.InvalidOrderFormException;
+import store.interfaces.product.ProductRequest;
+import store.interfaces.promotion.PromotionNonApplicablePurchaseResponse;
+import store.interfaces.promotion.PromotionRequest;
+import store.interfaces.order.AdditionalPurchaseResponse;
+import store.interfaces.order.OrderRequest;
 
 public class InputHandler {
 

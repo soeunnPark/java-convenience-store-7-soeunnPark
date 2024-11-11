@@ -11,15 +11,15 @@ import store.domain.product.ProductService;
 import store.domain.promotion.PromotionService;
 import store.domain.receipt.Receipt;
 import store.domain.receipt.ReceiptService;
-import store.interfaces.AdditionalPurchaseResponse;
-import store.interfaces.InputHandler;
-import store.interfaces.OrderRequest;
-import store.interfaces.OutputHandler;
-import store.interfaces.ProductInventoryResponse;
-import store.interfaces.ProductRequest;
-import store.interfaces.PromotionNonApplicablePurchaseResponse;
-import store.interfaces.PromotionRequest;
-import store.interfaces.ReceiptResponse;
+import store.interfaces.order.AdditionalPurchaseResponse;
+import store.interfaces.input.InputHandler;
+import store.interfaces.order.OrderRequest;
+import store.interfaces.output.OutputHandler;
+import store.interfaces.product.ProductInventoryResponse;
+import store.interfaces.product.ProductRequest;
+import store.interfaces.promotion.PromotionNonApplicablePurchaseResponse;
+import store.interfaces.promotion.PromotionRequest;
+import store.interfaces.receipt.ReceiptResponse;
 
 public class OrderController {
 

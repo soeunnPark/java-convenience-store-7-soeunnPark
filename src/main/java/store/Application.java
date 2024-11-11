@@ -9,8 +9,8 @@ import store.domain.product.ProductService;
 import store.domain.promotion.PromotionRepository;
 import store.domain.promotion.PromotionService;
 import store.domain.receipt.ReceiptService;
-import store.interfaces.InputHandler;
-import store.interfaces.OutputHandler;
+import store.interfaces.input.InputHandler;
+import store.interfaces.output.OutputHandler;
 
 public class Application {
     public static void main(String[] args) {

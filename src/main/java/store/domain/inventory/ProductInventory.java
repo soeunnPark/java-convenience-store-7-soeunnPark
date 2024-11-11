@@ -28,7 +28,7 @@ public class ProductInventory {
         this.totalStockQuantity = 0;
     }
 
-    public void addPromotion(Promotion promotion) {
+    public void setPromotion(Promotion promotion) {
         this.promotion = promotion;
     }
 

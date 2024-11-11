@@ -7,7 +7,7 @@ import store.domain.product.Product;
 import store.domain.product.ProductRepository;
 import store.domain.promotion.Promotion;
 import store.domain.promotion.PromotionRepository;
-import store.interfaces.ProductRequest;
+import store.interfaces.product.ProductRequest;
 
 public class ProductInventoryService {
 
@@ -32,7 +32,7 @@ public class ProductInventoryService {
                 continue;
             }
             Promotion promotion = promotionRepository.findPromotion(productRequest.promotionName());
-            productInventory.addPromotion(promotion);
+            productInventory.setPromotion(promotion);
             productInventory.updatePromotionStockQuantity(productRequest.stockQuantity());
         }
         return productInventoryRepository.findAllProductInventory();
@@ -45,16 +45,16 @@ public class ProductInventoryService {
         }
     }
 
-    private void createProductInventory() {
-        productRepository.findAllProducts().stream()
-                .map(ProductInventory::new)
-                .forEach(productInventoryRepository::saveProductInventory);
-    }
-
     public void updateStock(Order order) {
         for (Product product : order.getOrder().keySet()) {
             ProductInventory productInventory = productInventoryRepository.findProductInventory(product.getName());
             productInventory.purchase(order.getOrder().get(product));
         }
+    }
+
+    private void createProductInventory() {
+        productRepository.findAllProducts().stream()
+                .map(ProductInventory::new)
+                .forEach(productInventoryRepository::saveProductInventory);
     }
 }

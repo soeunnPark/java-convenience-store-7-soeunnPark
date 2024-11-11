@@ -1,4 +1,4 @@
-package store.interfaces;
+package store.interfaces.receipt;
 
 import java.util.ArrayList;
 import java.util.List;

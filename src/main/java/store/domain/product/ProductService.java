@@ -1,7 +1,7 @@
 package store.domain.product;
 
 import java.util.List;
-import store.interfaces.ProductRequest;
+import store.interfaces.product.ProductRequest;
 
 public class ProductService {
 

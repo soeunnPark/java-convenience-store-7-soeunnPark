@@ -1,4 +1,4 @@
-package store.interfaces;
+package store.interfaces.promotion;
 
 import java.time.LocalDate;
 import store.domain.promotion.Promotion;

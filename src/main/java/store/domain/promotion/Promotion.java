@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Promotion {
+
     private final String name;
     private final int buy;
     private final int get;

@@ -1,6 +1,8 @@
-package store.interfaces;
+package store.interfaces.output;
 
 import java.util.List;
+import store.interfaces.product.ProductInventoryResponse;
+import store.interfaces.receipt.ReceiptResponse;
 
 public class OutputHandler {
 
