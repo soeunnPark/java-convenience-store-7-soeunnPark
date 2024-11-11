@@ -50,9 +50,7 @@ public class OrderController {
             printStore(productInventories);
             Order order = getOrder();
             modifyOrder(order);
-            boolean isMembership = askForMembership();
-            outputHandler.printNewLine();
-            purchase(isMembership, order, productInventories);
+            purchase(order);
         } while (inputHandler.askContinue());
         inputHandler.closeConsole();
     }
@@ -65,9 +63,12 @@ public class OrderController {
     }
 
     private boolean askForMembership() {
+        boolean isMembership;
         while(true) {
             try {
-                return inputHandler.readMembership();
+                isMembership = inputHandler.readMembership();
+                outputHandler.printNewLine();
+                return isMembership;
             } catch (ConvenienceStoreException e) {
                 System.out.println(e.getErrorMessageForClient());
             }
@@ -146,8 +147,9 @@ public class OrderController {
         }
     }
 
-    private void purchase(boolean isMembership, Order order, List<ProductInventory> productInventories) {
-        Receipt receipt = receiptService.makeReceipt(isMembership, order, productInventories);
+    private void purchase(Order order) {
+        boolean isMembership = askForMembership();
+        Receipt receipt = receiptService.makeReceipt(isMembership, order);
         for (Product product : order.getOrder().keySet()) {
             ProductInventory productInventory = productInventoryService.findProductInventory(product.getName());
             productInventory.purchase(order.getOrder().get(product));

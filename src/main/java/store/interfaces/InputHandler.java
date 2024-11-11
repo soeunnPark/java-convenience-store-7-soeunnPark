@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import store.common.exception.ConvenienceStoreException;
 import store.common.exception.InvalidConfirmResponseException;
 import store.common.exception.InvalidFileException;
 import store.common.exception.InvalidOrderFormException;
@@ -83,9 +84,15 @@ public class InputHandler {
     }
 
     public boolean askContinue() {
-        System.out.println("감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)");
-        String input = readLineWithoutSpace();
-        return convertInputForConfirm(input);
+        while(true) {
+            try {
+                System.out.println("감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)");
+                String input = readLineWithoutSpace();
+                return convertInputForConfirm(input);
+            } catch (ConvenienceStoreException e) {
+                System.out.println(e.getErrorMessageForClient());
+            }
+        }
     }
 
     private String readLineWithoutSpace() {

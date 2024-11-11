@@ -16,16 +16,16 @@ public class ReceiptService {
         this.productInventoryRepository = productInventoryRepository;
     }
 
-    public Receipt makeReceipt(boolean isMembership, Order order, List<ProductInventory> productInventories) {
-        Map<Product, Integer> promotionGiveaway = getPromotionGiveaway(order, productInventories);
+    public Receipt makeReceipt(boolean isMembership, Order order) {
+        Map<Product, Integer> promotionGiveaway = getPromotionGiveaway(order);
         int membershipDiscount = 0;
         if(isMembership) {
-            membershipDiscount = calculateMembershipDiscount(order, productInventories);
+            membershipDiscount = calculateMembershipDiscount(order);
         }
         return new Receipt(order, promotionGiveaway, membershipDiscount);
     }
 
-    private Map<Product, Integer> getPromotionGiveaway(Order order, List<ProductInventory> productInventories) {
+    private Map<Product, Integer> getPromotionGiveaway(Order order) {
         Map<Product, Integer> promotionGiveaway = new HashMap<>();
         for (Product product : order.getOrder().keySet()) {
             ProductInventory productInventory = productInventoryRepository.findProductInventory(product.getName());
@@ -37,7 +37,7 @@ public class ReceiptService {
         return promotionGiveaway;
     }
 
-    private int calculateMembershipDiscount(Order order, List<ProductInventory> productInventories) {
+    private int calculateMembershipDiscount(Order order) {
         int purchaseAmountForMembershipDiscount = 0;
         for (Product product : order.getOrder().keySet()) {
             ProductInventory productInventory = productInventoryRepository.findProductInventory(product.getName());

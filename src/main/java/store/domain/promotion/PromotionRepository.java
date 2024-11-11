@@ -2,7 +2,6 @@ package store.domain.promotion;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import store.common.exception.PromotionNotExistException;
 
 public class PromotionRepository {

@@ -40,7 +40,7 @@ class ReceiptServiceTest {
         Order order = new Order(Map.of(cola,3, energyBar, 5));
 
         ReceiptService receiptService = new ReceiptService(productInventoryRepository);
-        Receipt receipt = receiptService.makeReceipt(true, order, productInventoryRepository.findAllProductInventory());
+        Receipt receipt = receiptService.makeReceipt(true, order);
 
         assertAll(
                 () -> assertThat(receipt.getTotalPurchaseAmount()).isEqualTo(13000),
