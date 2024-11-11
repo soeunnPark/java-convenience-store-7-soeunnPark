@@ -25,7 +25,7 @@ public class InputHandler {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] splitInput = line.split(",");
-                productsRequest.add(ProductRequest.of(splitInput[0], splitInput[1], splitInput[2], splitInput[3]));
+                productsRequest.add(ProductRequest.of(splitInput[0].trim(), splitInput[1].trim(), splitInput[2].trim(), splitInput[3].trim()));
             }
             br.close();
         } catch (IOException e) {
@@ -42,7 +42,7 @@ public class InputHandler {
             while ((line = br.readLine()) != null) {
                 String[] splitInput = line.split(",");
                 promotionsRequest.add(
-                        PromotionRequest.of(splitInput[0], splitInput[1], splitInput[2], splitInput[3], splitInput[4]));
+                        PromotionRequest.of(splitInput[0].trim(), splitInput[1].trim(), splitInput[2].trim(), splitInput[3].trim(), splitInput[4].trim()));
             }
             br.close();
         } catch (IOException e) {

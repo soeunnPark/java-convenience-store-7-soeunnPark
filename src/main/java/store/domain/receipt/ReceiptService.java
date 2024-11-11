@@ -40,7 +40,7 @@ public class ReceiptService {
         int purchaseAmountForMembershipDiscount = 0;
         for (Product product : order.getOrder().keySet()) {
             ProductInventory productInventory = productInventoryRepository.findProductInventory(product.getName());
-            if (productInventory.hasPromotion()) {
+            if (productInventory.hasValidPromotion()) {
                 int promotionNonApplicablePurchaseQuantity = productInventory.getPromotionNonApplicablePurchaseQuantity(
                         order.getOrder().get(product));
                 purchaseAmountForMembershipDiscount += promotionNonApplicablePurchaseQuantity * product.getPrice();

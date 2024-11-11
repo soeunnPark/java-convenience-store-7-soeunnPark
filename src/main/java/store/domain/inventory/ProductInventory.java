@@ -55,7 +55,7 @@ public class ProductInventory {
     }
 
     public void purchase(int purchaseQuantity) {
-        if (this.promotion == null || !this.promotion.isPromotionAvailable()) {
+        if(!hasValidPromotion()) {
             stockQuantity -= purchaseQuantity;
             totalStockQuantity -= purchaseQuantity;
             return;
@@ -72,8 +72,12 @@ public class ProductInventory {
         return Objects.nonNull(promotion);
     }
 
+    public boolean hasValidPromotion() {
+        return hasPromotion() && this.promotion.isPromotionAvailable();
+    }
+
     public int recommendAdditionalPurchase(int purchaseQuantity) {
-        if (this.promotion == null || !promotion.isPromotionAvailable()) {
+        if(!hasValidPromotion()) {
             return 0;
         }
         if (purchaseQuantity >= promotionStockQuantity) {
@@ -86,7 +90,7 @@ public class ProductInventory {
     }
 
     public int getPromotionNonApplicablePurchaseQuantity(int purchaseQuantity) {
-        if (this.promotion == null || !promotion.isPromotionAvailable()) {
+        if(!hasValidPromotion()) {
             return 0;
         }
         if (purchaseQuantity < this.promotionStockQuantity) {
@@ -96,7 +100,7 @@ public class ProductInventory {
     }
 
     public int getPromotionGiveawayCount(int purchaseQuantity) {
-        if (this.promotion == null || !promotion.isPromotionAvailable()) {
+        if(!hasValidPromotion()) {
             return 0;
         }
         return (Math.min(promotionStockQuantity, purchaseQuantity) / (this.promotion.getBuy()
@@ -124,7 +128,7 @@ public class ProductInventory {
     }
 
     private int getPromotionApplicablePurchaseQuantity(int purchaseQuantity) {
-        if (this.promotion == null || !promotion.isPromotionAvailable()) {
+        if(!hasValidPromotion()) {
             return 0;
         }
         return (Math.min(this.promotionStockQuantity, purchaseQuantity) / (this.promotion.getBuy()
