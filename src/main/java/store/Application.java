@@ -1,5 +1,6 @@
 package store;
 
+import java.io.IOException;
 import store.domain.inventory.StoreInventoryService;
 import store.domain.order.OrderController;
 import store.domain.product.ProductRepository;
@@ -11,7 +12,7 @@ import store.interfaces.InputHandler;
 import store.interfaces.OutputHandler;
 
 public class Application {
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
 
         InputHandler inputHandler = new InputHandler();
         OutputHandler outputHandler = new OutputHandler();

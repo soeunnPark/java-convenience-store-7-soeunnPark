@@ -2,10 +2,8 @@ package store.interfaces;
 
 import camp.nextstep.edu.missionutils.Console;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import store.common.exception.InvalidConfirmResponseException;
@@ -16,31 +14,35 @@ import store.interfaces.AdditionalPurchase.Request;
 public class InputHandler {
 
     public List<ProductRequest> readProducts() {
-        String fileName = "products.md";
         List<ProductRequest> productsRequest = new ArrayList<>();
-        try (BufferedReader bufferedReader = readFile(fileName)) {
-            String input;
-            while ((input = bufferedReader.readLine()) != null) {
-                String[] splitInput = input.split(",");
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("src/main/resources/products.md"));
+            while(true) {
+                String line = br.readLine();
+                if(line == null) break;
+                String[] splitInput = line.split(",");
                 productsRequest.add(ProductRequest.of(splitInput[0], splitInput[1], splitInput[2], splitInput[3]));
             }
+            br.close();
         } catch (IOException e) {
-            throw new InvalidFileException(fileName, e);
+            throw new InvalidFileException("products.md");
         }
         return productsRequest;
     }
 
     public List<PromotionRequest> readPromotions()  {
-        String fileName = "promotions.md";
         List<PromotionRequest> promotionsRequest = new ArrayList<>();
-        try (BufferedReader bufferedReader = readFile(fileName)) {
-            String input;
-            while ((input = bufferedReader.readLine()) != null) {
-                String[] splitInput = input.split(",");
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("src/main/resources/promotions.md"));
+            while (true) {
+                String line = br.readLine();
+                if(line == null) break;
+                String[] splitInput = line.split(",");
                 promotionsRequest.add(PromotionRequest.of(splitInput[0], splitInput[1], splitInput[2], splitInput[3], splitInput[4]));
             }
+            br.close();
         } catch (IOException e) {
-            throw new InvalidFileException(fileName);
+            throw new InvalidFileException("promotions.md");
         }
         return promotionsRequest;
     }
@@ -96,18 +98,6 @@ public class InputHandler {
         return Console.readLine().trim();
     }
 
-    private BufferedReader readFile(String fileName) {
-        try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
-            if (inputStream == null) {
-                throw new FileNotFoundException(fileName);
-            }
-            return new BufferedReader(new InputStreamReader(inputStream));
-        } catch (IOException e) {
-            throw new InvalidFileException(fileName, e);
-        }
-    }
-
     public boolean askContinue() {
         System.out.println("감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)");
         String input = readLineWithoutSpace();
@@ -117,5 +107,9 @@ public class InputHandler {
             return false;
         }
         throw new InvalidConfirmResponseException(input);
+    }
+
+    public void closeConsole() {
+        Console.close();
     }
 }

@@ -54,6 +54,7 @@ public class OrderController {
             outputHandler.printNewLine();
             purchase(isMembership, order, storeInventory);
         } while (inputHandler.askContinue());
+        inputHandler.closeConsole();
     }
 
     private void printStore(StoreInventory storeInventory) {
