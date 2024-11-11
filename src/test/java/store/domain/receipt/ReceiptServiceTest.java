@@ -49,5 +49,4 @@ class ReceiptServiceTest {
                 () -> assertThat(receipt.getPayment()).isEqualTo(9000)
         );
     }
-
 }

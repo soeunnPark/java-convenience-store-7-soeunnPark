@@ -1,8 +1,5 @@
 package store.interfaces.order;
 
-import static store.interfaces.input.InputHandler.readProducts;
-import static store.interfaces.input.InputHandler.readPromotions;
-
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -59,8 +56,8 @@ public class OrderController {
     }
 
     private List<ProductInventory> makeStore() {
-        List<ProductRequest> productRequests = readProducts();
-        List<PromotionRequest> promotionRequests = readPromotions();
+        List<ProductRequest> productRequests = inputHandler.readProducts();
+        List<PromotionRequest> promotionRequests = inputHandler.readPromotions();
         productService.createProducts(productRequests);
         promotionService.createPromotion(promotionRequests);
         return productInventoryService.createProductInventory(productRequests);

@@ -2,6 +2,7 @@ package store.interfaces.input;
 
 import camp.nextstep.edu.missionutils.Console;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,10 +23,10 @@ public class InputHandler {
     static final String PROMOTIONS_PATH = "src/main/resources/promotions.md";
     static final String DELIMITER = ",";
 
-    public static List<ProductRequest> readProducts() {
+    public List<ProductRequest> readProducts() {
         List<ProductRequest> productsRequest = new ArrayList<>();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(PRODUCTS_PATH));
+            BufferedReader br = new BufferedReader(new FileReader(getFileFromResource("products.md")));
             String line;
             while ((line = br.readLine()) != null) {
                 String[] splitInput = line.split(DELIMITER);
@@ -38,10 +39,10 @@ public class InputHandler {
         return productsRequest;
     }
 
-    public static List<PromotionRequest> readPromotions() {
+    public List<PromotionRequest> readPromotions() {
         List<PromotionRequest> promotionsRequest = new ArrayList<>();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(PROMOTIONS_PATH));
+            BufferedReader br = new BufferedReader(new FileReader(getFileFromResource("promotions.md")));
             String line;
             while ((line = br.readLine()) != null) {
                 String[] splitInput = line.split(DELIMITER);
@@ -117,6 +118,11 @@ public class InputHandler {
             return false;
         }
         throw new InvalidConfirmResponseException(input);
+    }
+
+    private File getFileFromResource(String fileName) {
+        ClassLoader classLoader = InputHandler.class.getClassLoader();
+        return new File(classLoader.getResource(fileName).getFile());
     }
 
     public void closeConsole() {
