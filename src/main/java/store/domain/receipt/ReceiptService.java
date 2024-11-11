@@ -44,5 +44,4 @@ public class ReceiptService {
         }
         return (int) (purchaseAmountForMembershipDiscount * 0.3);
     }
-
 }

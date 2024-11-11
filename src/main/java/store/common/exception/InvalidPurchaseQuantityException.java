@@ -5,11 +5,11 @@ import store.domain.product.Product;
 public class InvalidPurchaseQuantityException extends ConvenienceStoreException{
 
     public InvalidPurchaseQuantityException(String invalidInput) {
-        super(ErrorMessage.PURCHASE_QUANTITY_MUST_BE_NUMBER, "(입력값: " + invalidInput + ")");
+        super(ErrorMessage.INVALID_ORDER_FORM, "(입력값: " + invalidInput + ")");
     }
 
     public InvalidPurchaseQuantityException(String invalidInput, Exception cause) {
-        super(ErrorMessage.PURCHASE_QUANTITY_MUST_BE_NUMBER, "(입력값: " + invalidInput + ")", cause);
+        super(ErrorMessage.INVALID_ORDER_FORM, "(입력값: " + invalidInput + ")", cause);
     }
 
     public InvalidPurchaseQuantityException(Product product, int totalStockQuantity, int purchaseQuantity) {

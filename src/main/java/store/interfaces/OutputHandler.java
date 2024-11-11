@@ -55,7 +55,4 @@ public class OutputHandler {
         System.out.printf("%-28s%-7s%n", "멤버십할인", String.format("-%,d", Math.abs(receiptResponse.membershipDiscount())));
         System.out.printf("%-28s%-7s%n", "내실돈", String.format("%,d", Math.abs(receiptResponse.payment())));
     }
-
-
-
 }

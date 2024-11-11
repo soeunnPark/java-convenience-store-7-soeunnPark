@@ -10,7 +10,6 @@ public enum ErrorMessage {
     INVALID_STOCK_QUANTITY("잘못된 재고 수량입니다."),
     INVALID_PRODUCT_PRICE("잘못된 제품 가격입니다."),
     PROMOTION_NOT_EXIST("존재하지 않는 프로모션입니다."),
-    PURCHASE_QUANTITY_MUST_BE_NUMBER("구매 수량은 숫자여야 합니다."),
     INVALID_ORDER_FORM("올바르지 않은 형식으로 입력했습니다.")
     ;
 

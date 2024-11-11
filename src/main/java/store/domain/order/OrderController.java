@@ -127,6 +127,4 @@ public class OrderController {
         }
         outputHandler.printReceipt(ReceiptResponse.from(order, receipt));
     }
-
-
 }

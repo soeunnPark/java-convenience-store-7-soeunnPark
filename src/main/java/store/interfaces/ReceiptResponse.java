@@ -59,7 +59,5 @@ public record ReceiptResponse(
             }
             return promotionGiveawayResponse;
         }
-
     }
-
 }
